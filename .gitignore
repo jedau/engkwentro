@@ -1,0 +1,46 @@
+# Environment and local secrets — never commit these
+.env
+.env.local
+.env.*.local
+.dev.vars
+**/.dev.vars
+
+# Flutter compile-time defines (may hold Reown project id)
+client/dart_defines.json
+
+# NEAR CLI credentials (never ship)
+neardev/
+**/.near-credentials/
+**/credentials.json
+
+# Machine-local Android SDK path
+**/local.properties
+
+# Rust
+target/
+**/target/
+Cargo.lock.bak
+
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+
+# Node
+node_modules/
+.wrangler/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local artifacts
+*.log
+tmp/
+*.wasm
+neardev/
