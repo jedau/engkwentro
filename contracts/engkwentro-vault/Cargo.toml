@@ -1,0 +1,16 @@
+[package]
+name = "engkwentro-vault"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT"
+description = "Engkwentro vault contract v0.1.0 — Pro stake and free pool"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk.workspace = true
+
+[dev-dependencies]
+near-sdk = { workspace = true, features = ["unit-testing"] }

@@ -1,0 +1,16 @@
+[package]
+name = "engkwentro-registry"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT"
+description = "Engkwentro registry contract v0.1.0 — integer Elo ladder"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk.workspace = true
+
+[dev-dependencies]
+near-sdk = { workspace = true, features = ["unit-testing"] }
