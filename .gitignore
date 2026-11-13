@@ -13,7 +13,7 @@ neardev/
 **/.near-credentials/
 **/credentials.json
 
-# Machine-local Android SDK path
+# Machine-local Android SDK path (also in client/android/.gitignore)
 **/local.properties
 
 # Rust
@@ -27,7 +27,23 @@ Cargo.lock.bak
 build/
 .flutter-plugins
 .flutter-plugins-dependencies
+**/.flutter-plugins-dependencies
 *.iml
+
+# Android / iOS generated (belt-and-suspenders; also in client/*/.gitignore)
+**/.gradle/
+**/Flutter/ephemeral/
+**/Flutter/Generated.xcconfig
+**/Flutter/flutter_export_environment.sh
+
+# Local screenshot / alignment debug dumps
+client/assets/images/_btn-shot.png
+client/assets/images/_btn-crop.png
+client/assets/images/_screen-connect.png
+client/assets/images/_android-*.png
+client/assets/images/_ios-*.png
+client/assets/images/_near-on-cream-debug.png
+docs/assets/_*.png
 
 # Node
 node_modules/
