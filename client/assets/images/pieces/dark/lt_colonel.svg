@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect x="2" y="2" width="44" height="44" rx="4" fill="#182232" stroke="#DDA835" stroke-width="2"/>
+  <rect x="5" y="5" width="38" height="38" rx="2" fill="none" stroke="#A37A20" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <text x="24" y="14" fill="#F3E3B6" font-family="monospace" font-size="6" font-weight="bold" text-anchor="middle">LT. COL</text>
+  <circle cx="17" cy="28" r="3.2" fill="#DDA835"/>
+  <path d="M17.00,23.30 L17.00,21.30 M20.32,24.68 L21.74,23.26 M21.70,28.00 L23.70,28.00 M20.32,31.32 L21.74,32.74 M17.00,32.70 L17.00,34.70 M13.68,31.32 L12.26,32.74 M12.30,28.00 L10.30,28.00 M13.68,24.68 L12.26,23.26" fill="none" stroke="#DDA835" stroke-width="1.4" stroke-linecap="round"/>
+  <circle cx="31" cy="28" r="3.2" fill="#DDA835"/>
+  <path d="M31.00,23.30 L31.00,21.30 M34.32,24.68 L35.74,23.26 M35.70,28.00 L37.70,28.00 M34.32,31.32 L35.74,32.74 M31.00,32.70 L31.00,34.70 M27.68,31.32 L26.26,32.74 M26.30,28.00 L24.30,28.00 M27.68,24.68 L26.26,23.26" fill="none" stroke="#DDA835" stroke-width="1.4" stroke-linecap="round"/>
+</svg>

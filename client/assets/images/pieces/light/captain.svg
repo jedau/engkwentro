@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Background Tile -->
+  <rect x="2" y="2" width="44" height="44" rx="4" fill="#F3E3B6" stroke="#A37A20" stroke-width="2"/>
+  <rect x="5" y="5" width="38" height="38" rx="2" fill="none" stroke="#182232" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <text x="24" y="14" fill="#182232" font-family="monospace" font-size="6" font-weight="bold" text-anchor="middle">CAPT</text>
+  <polygon points="24,19 19,26 29,26" fill="#182232"/>
+  <polygon points="17,29 12,36 22,36" fill="#182232"/>
+  <polygon points="31,29 26,36 36,36" fill="#182232"/>
+</svg>

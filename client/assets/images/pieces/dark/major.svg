@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect x="2" y="2" width="44" height="44" rx="4" fill="#182232" stroke="#DDA835" stroke-width="2"/>
+  <rect x="5" y="5" width="38" height="38" rx="2" fill="none" stroke="#A37A20" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <text x="24" y="14" fill="#F3E3B6" font-family="monospace" font-size="6" font-weight="bold" text-anchor="middle">MAJOR</text>
+  <circle cx="24" cy="28" r="4.0" fill="#DDA835"/>
+  <path d="M24.00,22.20 L24.00,19.80 M28.10,23.90 L29.80,22.20 M29.80,28.00 L32.20,28.00 M28.10,32.10 L29.80,33.80 M24.00,33.80 L24.00,36.20 M19.90,32.10 L18.20,33.80 M18.20,28.00 L15.80,28.00 M19.90,23.90 L18.20,22.20" fill="none" stroke="#DDA835" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
