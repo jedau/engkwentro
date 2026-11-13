@@ -35,7 +35,7 @@ amount** (default `0` = no wager). Creator attaches that deposit on
 The vault crate models a **250 NEAR** Pro lock, 7-day unstake, and a
 `min(50, staked * 15 / 250)` daily cap. It is **not** deployed on the
 play account. Yield projections use `STAKING_APY` (default 5%). See
-[`ROADMAP.md`](ROADMAP.md) for when this might ship.
+Vault and Elo crates compile in-tree; they are not on the live demo path yet.
 
 ## Not in v0.1.0
 

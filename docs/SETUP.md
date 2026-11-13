@@ -1,9 +1,20 @@
-# SETUP.md
+# Getting Started
 
-Toolchain pins for **v0.1.0** live in `docs/TOOLCHAIN.md` (`near-sdk` 5.30.0).
+**This is the install and run guide** for Engkwentro v0.1.0.  
+Toolchain pins: [`TOOLCHAIN.md`](TOOLCHAIN.md) (`near-sdk` 5.30.0).
 
 Mac / Apple Silicon. Testnet only. Every step is verifiable — if one doesn't verify,
 stop rather than continuing.
+
+**Short path (already have Flutter + funded demo accounts):**
+
+```bash
+node scripts/mailbox_local.mjs          # terminal 1 — OT mailbox :8787
+scripts/run_two_phones.sh               # or two flutter run sessions
+```
+
+Then: Connect Wallet → Create play account or Demo Alice/Bob → Create / Join.  
+Full toolchain and deploy steps are below.
 
 ## 0. Prerequisites
 
@@ -71,7 +82,7 @@ only from it.
 contracts/          Cargo workspace (match, registry, vault)
 client/             Flutter app + two-phone simulation tests
 scripts/            mailbox, two-phone runner, deploy, gas, arbiter codegen
-docs/               rules, clocks, architecture, findings
+docs/               this guide, rules, clocks, architecture, findings
 ```
 
 ## 6. OT mailbox (local)
@@ -100,8 +111,8 @@ Point both phones at it:
 
 ## 8. Two-phone verification
 
-- [ ] `cargo test -p engkwentro` — 38 passed
-- [ ] `cd client && flutter test` — 55 passed
+- [ ] `cargo test -p engkwentro` — 40 passed
+- [ ] `cd client && flutter test` — 59 passed
 - [ ] `play.engkwentro.testnet` holds the current match wasm
 - [ ] `get_sync`, `get_join_key`, `accept_match_by_key` resolve
 - [ ] `player1` / `player2` funded (~3 NEAR is enough for many matches)
@@ -119,7 +130,7 @@ For WalletConnect pairing:
 4. Full restart with `--dart-define-from-file=dart_defines.json`.
 
 Without that id, create-account, deep-link wallets, and Demo Alice/Bob
-still work. Details: `docs/CLIENT.md`.
+still work. Details: [`CLIENT.md`](CLIENT.md).
 
 ## Known gotchas
 

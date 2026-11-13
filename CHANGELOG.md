@@ -169,7 +169,7 @@ in `docs/CLOCKS.md`.
 - Two-phone flip: after `Ended` each side `submit_setup`, then `settle`.
   `get_opened` paints both armies. Sequential item 3.
 - Hackathon README rewritten for judges: Option 2 thesis, measured gas,
-  do-X→see-Y, Nearblocks path, submission fields (`BRIEF.md` §10).
+  do-X→see-Y, Nearblocks path, submission fields.
 - Create match is a home modal; only after `create_match` does the
   match screen open (waiting on the join key). Open challenge — no
   named opponent. First mover remains the SHA-256 bit at confirm.

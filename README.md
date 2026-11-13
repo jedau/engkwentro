@@ -4,7 +4,7 @@
 **Version:** 0.1.0  
 **Deadline:** NEAR Hackathon, 2026-11-14T23:59:00Z  
 **Chain:** NEAR **testnet** — `play.engkwentro.testnet`  
-**Landing:** GitHub Pages from [`docs/index.html`](docs/index.html) (Settings → Pages → Deploy from branch → `/docs`).
+**Landing:** [jedau.github.io/engkwentro](https://jedau.github.io/engkwentro/) ([`docs/index.html`](docs/index.html))
 
 A hidden-information board game (Game of the Generals) where fog of war
 survives a transparent ledger. The game is the demo. The transferable
@@ -12,6 +12,24 @@ artifact is the pattern in [`docs/FINDINGS.md`](docs/FINDINGS.md).
 
 Weight for judges: **`open` first** (architecture, measured gas, published
 dead ends), **`games` second** (two-device match on testnet).
+
+## Getting Started
+
+Install, accounts, and two-phone run: **[`docs/SETUP.md`](docs/SETUP.md)**.
+
+```bash
+# Tests (offline)
+cd contracts && cargo test -p engkwentro    # 40 passed
+cd client && flutter test                   # 59 passed
+
+# Play on testnet (two devices)
+node scripts/mailbox_local.mjs              # terminal 1
+scripts/run_two_phones.sh                   # or two flutter run sessions
+```
+
+Connect Wallet → Create play account or Demo Alice/Bob → Create / Join.  
+Optional WalletConnect: copy `client/dart_defines.json.example` → set
+`REOWN_PROJECT_ID` → `--dart-define-from-file=dart_defines.json`.
 
 ## The problem
 
@@ -58,46 +76,6 @@ F9). The flip slashes later. Delayed audit, not live-trustless.
 Built for the NEAR Hackathon ending **2026-11-14**. Work in this tree is
 the submission. Disclose any baseline from before 2026-10-19 in the
 application if applicable.
-
-## Reproduction (do X → see Y)
-
-Contracts are on **testnet**. Do not send these at mainnet.
-
-```bash
-# X: unit pipeline (no network)
-cd contracts && cargo test -p engkwentro
-
-# Y: 40 passed (pipeline, clocks, stakes, …)
-```
-
-```bash
-# X: client tests (offline, includes two-phone simulation)
-cd client && flutter test
-
-# Y: 59 passed
-```
-
-```bash
-# X: local mailbox + two phones
-node scripts/mailbox_local.mjs
-scripts/run_two_phones.sh
-
-# Y: Connect Wallet → Create play account or Demo Alice/Bob → Create / Join
-#    Set the pieces → Confirm roster → play. Clocks and turns sync via
-#    get_sync + think_ns (see docs/CLOCKS.md).
-```
-
-```bash
-# X: Flutter web smoke (one browser)
-node scripts/mailbox_local.mjs
-cd client && flutter pub get && flutter run -d chrome \
-  --dart-define=MATCH_CONTRACT=play.engkwentro.testnet \
-  --dart-define=MAILBOX_URL=http://127.0.0.1:8787
-```
-
-**Nearblocks.** Overview has no args. Open
-`/txns/{hash}/execution` → first receipt → Actions → **Hide N bytes**.
-That JSON is the FunctionCall input. Result is the return value.
 
 ## Technical architecture
 
@@ -154,13 +132,13 @@ Fields only: `requestId`, `projectName`, `leadName`, `email`, `size`,
 `tracks`, `nearAddress`, `projectUrl`, `demoUrl`, `idea`, `consent`.
 Do **not** send `website`. `nearAddress` must be **mainnet**, lowercase.
 `tracks`: include `games` and `open`. Repo public + demo online **before**
-submit — cannot edit after. Checklist: [`TODO.md`](TODO.md). Brief:
-[`BRIEF.md`](BRIEF.md) §10.
+submit — cannot edit after. Rules: [HACKATHON.md](https://nearhackathon.com/HACKATHON.md).
 
 ## Docs
 
 | | |
 |---|---|
+| [`docs/SETUP.md`](docs/SETUP.md) | Getting Started — toolchain, accounts, two-phone |
 | [`docs/FINDINGS.md`](docs/FINDINGS.md) | Dead ends — read this |
 | [`docs/RULES.md`](docs/RULES.md) | Canonical game spec |
 | [`docs/CLOCKS.md`](docs/CLOCKS.md) | Turn / clock / overlay authority |
@@ -170,8 +148,6 @@ submit — cannot edit after. Checklist: [`TODO.md`](TODO.md). Brief:
 | [`docs/ALTERNATIVES.md`](docs/ALTERNATIVES.md) | Worker vs 2PC vs ZK |
 | [`docs/GAS_BASELINE.md`](docs/GAS_BASELINE.md) | Simulator + testnet |
 | [`docs/ECONOMICS.md`](docs/ECONOMICS.md) | Measured gas + vault notes |
-| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Post-demo priorities |
-| [`SETUP.md`](SETUP.md) | Toolchain, accounts, two-phone |
 | [`CHANGELOG.md`](CHANGELOG.md) | v0.1.0 |
 
 Game of the Generals invented by Sofronio H. Pasola Jr., 1970. Rules are

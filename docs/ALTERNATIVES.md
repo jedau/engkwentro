@@ -57,7 +57,7 @@ See the live procedure in `RULES.md` §13.
 | Float Elo / independent rounding | Wasm has no floats; two `round`s break zero-sum | F7 |
 | `VOID_PENALTY < FORFEIT_PENALTY` | The first failure should grief the second | F8 |
 | Per-match contract | Deploy cost and upgrades scale with concurrency | ARCHITECTURE |
-| LST / DEX vault | Extra market, harvest, depeg; Pro is a lock, not a yield product | BRIEF |
+| LST / DEX vault | Extra market, harvest, depeg; Pro is a lock, not a yield product | locked |
 | Replay VOD in v0.1.0 | Persist 42 ranks after flip; later, not a protocol fork | 2026-11-01 |
 
 Do not revive Merkle or mid-game reveal to “help” Option 2. They fail for
