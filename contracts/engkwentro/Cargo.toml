@@ -1,0 +1,24 @@
+[package]
+name = "engkwentro"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "MIT"
+description = "Engkwentro match contract v0.1.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+near-sdk.workspace = true
+borsh = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+schemars = { version = "0.8", optional = true }
+
+[dev-dependencies]
+near-sdk = { workspace = true, features = ["unit-testing"] }
+
+[features]
+default = ["borsh", "serde"]
+borsh = ["dep:borsh"]
+serde = ["dep:serde", "dep:schemars"]

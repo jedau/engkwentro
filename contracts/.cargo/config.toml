@@ -1,0 +1,5 @@
+# Optional: only needed if you hit wasm stack exhaustion on deep deserialization.
+# wasm-ld defaults to a 1 MB stack, which bloats the artifact for a 72-square board.
+# Uncomment if a build or test stack-overflows.
+# [target.wasm32-unknown-unknown]
+# rustflags = ["-C", "link-arg=-zstack-size=32768"]
