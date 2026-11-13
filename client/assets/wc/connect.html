@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>WalletConnect</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #1B2335; color: #F8ECBD; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; box-sizing: border-box; text-align: center;
+    }
+    h1 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+    p { font-size: 13px; opacity: 0.85; margin: 0 0 20px; max-width: 320px; line-height: 1.4; }
+    #uriBox {
+      word-break: break-all; font-size: 11px; background: #252C3E; padding: 12px;
+      border-radius: 8px; max-width: 100%; margin-bottom: 16px; display: none;
+    }
+    button {
+      background: #C3973E; color: #060A0E; border: 0; border-radius: 8px;
+      padding: 12px 20px; font-weight: 700; font-size: 14px; cursor: pointer;
+    }
+    button.secondary { background: transparent; color: #D6B88F; border: 1px solid #B68C6A; margin-top: 10px; }
+    #status { margin-top: 16px; font-size: 12px; opacity: 0.75; min-height: 1.2em; }
+    #qr {
+      margin: 12px 0;
+      padding: 12px;
+      background: #F8ECBD;
+      border-radius: 12px;
+      display: none;
+      line-height: 0;
+    }
+    #qr canvas { display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <h1>WalletConnect</h1>
+  <p>Connect a NEAR testnet wallet. After connecting you still need a play account on this device to submit moves.</p>
+  <div id="qr"></div>
+  <div id="uriBox"></div>
+  <button id="copyBtn" type="button" style="display:none">Copy connection link</button>
+  <button id="retryBtn" class="secondary" type="button" style="display:none">Retry</button>
+  <div id="status">Starting…</div>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const projectId = params.get('projectId') || '';
+    const statusEl = document.getElementById('status');
+    const uriBox = document.getElementById('uriBox');
+    const copyBtn = document.getElementById('copyBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const qrEl = document.getElementById('qr');
+
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    function post(msg) {
+      try {
+        if (window.EngkwentroWc && window.EngkwentroWc.postMessage) {
+          window.EngkwentroWc.postMessage(JSON.stringify(msg));
+        }
+      } catch (_) {}
+    }
+
+    if (!projectId) {
+      setStatus('Missing REOWN_PROJECT_ID. Pass --dart-define=REOWN_PROJECT_ID=…');
+      post({ type: 'error', message: 'Missing REOWN_PROJECT_ID' });
+    } else {
+      connect();
+    }
+
+    retryBtn.onclick = () => { retryBtn.style.display = 'none'; connect(); };
+
+    async function renderQr(uri) {
+      try {
+        const QRCode = (await import('https://esm.sh/qrcode@1.5.4')).default;
+        const canvas = document.createElement('canvas');
+        await QRCode.toCanvas(canvas, uri, {
+          width: 260,
+          margin: 1,
+          color: { dark: '#060A0E', light: '#F8ECBD' },
+          errorCorrectionLevel: 'M',
+        });
+        qrEl.replaceChildren(canvas);
+        qrEl.style.display = 'block';
+      } catch (e) {
+        // Flutter overlays a native QR; keep the URI as a fallback here.
+        qrEl.style.display = 'none';
+        uriBox.style.display = 'block';
+        uriBox.textContent = uri;
+      }
+    }
+
+    async function connect() {
+      setStatus('Loading WalletConnect…');
+      try {
+        const { SignClient } = await import('https://esm.sh/@walletconnect/sign-client@2.17.2');
+        const client = await SignClient.init({
+          projectId,
+          metadata: {
+            name: 'Engkwentro',
+            description: 'Game of the Generals on NEAR',
+            url: 'https://engkwentro.testnet',
+            icons: ['https://avatars.githubusercontent.com/u/37784886'],
+          },
+        });
+
+        client.on('session_delete', () => post({ type: 'disconnected' }));
+
+        setStatus('Waiting for wallet approval…');
+        const { uri, approval } = await client.connect({
+          requiredNamespaces: {
+            near: {
+              methods: [
+                'near_signIn',
+                'near_signOut',
+                'near_getAccounts',
+                'near_signTransaction',
+                'near_signTransactions',
+                'near_signMessage',
+              ],
+              chains: ['near:testnet'],
+              events: ['chainChanged', 'accountsChanged'],
+            },
+          },
+        });
+
+        if (uri) {
+          copyBtn.style.display = 'inline-block';
+          copyBtn.onclick = async () => {
+            try { await navigator.clipboard.writeText(uri); setStatus('Link copied'); } catch (_) {}
+            post({ type: 'uri', uri });
+          };
+          post({ type: 'uri', uri });
+          await renderQr(uri);
+          setStatus('Scan the QR with your wallet');
+        }
+
+        const session = await approval();
+        const accounts = session.namespaces?.near?.accounts || [];
+        // accounts look like "near:testnet:alice.testnet"
+        const accountId = accounts[0] ? accounts[0].split(':').slice(2).join(':') : '';
+        if (!accountId) {
+          setStatus('Connected but no NEAR account returned');
+          post({ type: 'error', message: 'No NEAR account in session' });
+          retryBtn.style.display = 'inline-block';
+          return;
+        }
+        setStatus('Connected as ' + accountId);
+        post({ type: 'connected', accountId, topic: session.topic });
+      } catch (e) {
+        setStatus(String(e && e.message ? e.message : e));
+        post({ type: 'error', message: String(e && e.message ? e.message : e) });
+        retryBtn.style.display = 'inline-block';
+      }
+    }
+  </script>
+</body>
+</html>
