@@ -1,1 +1,29 @@
+# CODEOWNERS
+# These owners will be requested for review when someone opens a PR
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
 * @jedau
+
+# Documentation requires review from maintainers
+/docs/ @jedau
+
+# Client app and its tests require review
+/client/ @jedau
+/client/test/ @jedau
+
+# Contracts require review
+/contracts/ @jedau
+
+# Scripts and local hooks require review
+/scripts/ @jedau
+/.githooks/ @jedau
+
+# Core configuration changes require review
+/contracts/Cargo.toml @jedau
+/contracts/rust-toolchain.toml @jedau
+/client/pubspec.yaml @jedau
+/client/analysis_options.yaml @jedau
+
+# GitHub workflows and actions require review
+/.github/ @jedau
