@@ -67,16 +67,22 @@ if ! is_commit "$head"; then
   exit 1
 fi
 
-subjects="$(git -C "$ROOT" log --format=%s "${base}..${head}")"
+# SHA<TAB>subject for every commit. A subject-only list loses a trailing
+# empty subject inside $(...), and a blank line was skipped, so
+# `git commit --allow-empty-message` never reached the checker.
+records="$(git -C "$ROOT" log --format='%H%x09%s' "${base}..${head}")"
 
 failed=0
-if [[ -n "$subjects" ]]; then
-  while IFS= read -r subject || [[ -n "$subject" ]]; do
-    [[ -z "$subject" ]] && continue
+if [[ -n "$records" ]]; then
+  while IFS= read -r record || [[ -n "$record" ]]; do
+    [[ -z "$record" ]] && continue
+    sha="${record%%$'\t'*}"
+    subject="${record#*$'\t'}"
     if ! "$CHECK" -m "$subject"; then
+      echo "Commit ${sha}" >&2
       failed=1
     fi
-  done <<<"$subjects"
+  done <<<"$records"
 fi
 
 exit "$failed"
