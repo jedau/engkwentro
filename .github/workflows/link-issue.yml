@@ -1,0 +1,41 @@
+name: Link issue
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+  issues: read
+
+jobs:
+  link:
+    name: Link issue from branch
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Add a closing reference from the branch name
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          issue="$(printf '%s' "$BRANCH" | sed -nE 's/^([0-9]+)-.*/\1/p')"
+          if [ -z "$issue" ]; then
+            echo "Branch '$BRANCH' does not start with an issue number."
+            exit 0
+          fi
+          kind="$(gh api "repos/$REPO/issues/$issue" --jq 'if .pull_request then "pr" else "issue" end' 2>/dev/null || true)"
+          if [ "$kind" != "issue" ]; then
+            echo "No issue #$issue."
+            exit 0
+          fi
+          body="$(gh pr view "$PR" --repo "$REPO" --json body --jq '.body // ""')"
+          if printf '%s\n' "$body" | grep -qiE "(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]*:?[[:space:]]*#${issue}([^0-9]|$)"; then
+            echo "Pull request already closes #$issue."
+            exit 0
+          fi
+          printf '%s\n\nCloses #%s\n' "$body" "$issue" > "$RUNNER_TEMP/body.md"
+          gh pr edit "$PR" --repo "$REPO" --body-file "$RUNNER_TEMP/body.md"
