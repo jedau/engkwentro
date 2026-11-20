@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Refuse a commit created while checked out on a protected branch.
+set -euo pipefail
+
+branch="$(git rev-parse --abbrev-ref HEAD)"
+
+if [[ "$branch" == "main" || "$branch" == "master" ]]; then
+  echo "Direct commits to '${branch}' are not allowed." >&2
+  echo "Create a feature branch and commit there." >&2
+  exit 1
+fi
