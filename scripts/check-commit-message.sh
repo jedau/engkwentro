@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Reject a commit subject that is not Conventional Commits.
+#   type: subject
 #   type(scope): subject
-# Types: feat, fix, docs, style, refactor, test, chore, ci
+# Scope is optional. Types: feat, fix, docs, style, refactor, test, chore, ci
 #
+#   scripts/check-commit-message.sh -m "feat: add button"
 #   scripts/check-commit-message.sh -m "feat(client): add button"
 #   scripts/check-commit-message.sh path/to/COMMIT_EDITMSG
 set -euo pipefail
 
-pattern='^(feat|fix|docs|style|refactor|test|chore|ci)\([^[:space:])]+\): [^[:space:]].*$'
+pattern='^(feat|fix|docs|style|refactor|test|chore|ci)(\([^[:space:])]+\))?: [^[:space:]].*$'
 
 usage() {
   echo "Usage: check-commit-message.sh -m <subject> | check-commit-message.sh <message-file>" >&2
@@ -34,7 +36,7 @@ extract_subject() {
 reject() {
   local subject="$1"
   echo "Not a conventional commit subject: ${subject}" >&2
-  echo "Expected type(scope): subject" >&2
+  echo "Expected type: subject or type(scope): subject" >&2
   echo "Types: feat, fix, docs, style, refactor, test, chore, ci" >&2
   exit 1
 }

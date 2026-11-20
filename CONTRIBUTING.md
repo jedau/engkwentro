@@ -5,14 +5,16 @@
 Subjects are Conventional Commits:
 
 ```
+type: subject
 type(scope): subject
 ```
 
 Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`.
 
-Scope is required. A body after a blank line is fine; only the subject is checked.
+Scope is optional. A body after a blank line is fine; only the subject is checked.
 
 ```
+ci: check commit subjects
 ci(hooks): check commit subjects
 fix(contracts): reject an illegal move
 ```

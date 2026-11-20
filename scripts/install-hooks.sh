@@ -7,4 +7,4 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 git -C "$ROOT" config core.hooksPath .githooks
 echo "Hooks installed. This clone will use .githooks/."
 echo "A later git commit is refused only when the branch is main or master."
-echo "Any branch: the subject must match type(scope): subject."
+echo "Any branch: the subject must match type: subject or type(scope): subject."
