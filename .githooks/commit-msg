@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# commit-msg hook. The rule lives in scripts/check-commit-message.sh,
+# which CI calls as well.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec "$ROOT/scripts/check-commit-message.sh" "$1"
