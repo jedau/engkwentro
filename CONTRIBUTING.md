@@ -1,5 +1,7 @@
 # Contributing
 
+Format and lint with the commands in [STYLEGUIDE.md](STYLEGUIDE.md).
+
 ## Commit messages
 
 Subjects are Conventional Commits:
