@@ -13,6 +13,9 @@ permissions:
 jobs:
   conventional:
     name: Conventional Commits
+    # Deleting a branch is a push. Its after SHA is all zeros, so the range
+    # checker would fail looking for a head that was just removed.
+    if: github.event_name != 'push' || !github.event.deleted
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
