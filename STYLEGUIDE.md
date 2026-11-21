@@ -1,6 +1,6 @@
 # Style guide
 
-One set of format and lint commands. The editor and CI run these, so a save and a pull request cannot disagree.
+Run these format and lint commands by hand. No editor setting or workflow runs them yet.
 
 ## Rust
 
