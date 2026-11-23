@@ -120,10 +120,11 @@ what this cut demos.
 ## Limitations
 
 Testnet, unaudited. Live path is player-signed, player-submitted. Alice’s
-Five-star is delayed audit. Salts are in-memory until flip — do not kill
-the app mid-match. Home-row Flag breakthrough is silent in the UI; the
-board shows the piece, and the win is declared when the reply does not
-challenge that square ([`docs/RULES.md`](docs/RULES.md) §7.2).
+Five-star is delayed audit. `MatchLocalState` stores ranks and salts in
+`SharedPreferences` (`client/lib/match_store.dart`). Home-row Flag
+breakthrough is silent in the UI; the board shows the piece, and the win
+is declared when the reply does not challenge that square
+([`docs/RULES.md`](docs/RULES.md) §7.2).
 
 ## Submission
 
@@ -133,6 +134,31 @@ Fields only: `requestId`, `projectName`, `leadName`, `email`, `size`,
 Do **not** send `website`. `nearAddress` must be **mainnet**, lowercase.
 `tracks`: include `games` and `open`. Repo public + demo online **before**
 submit — cannot edit after. Rules: [HACKATHON.md](https://nearhackathon.com/HACKATHON.md).
+
+## For contributors
+
+Read these in order.
+
+1. [`CONTRIBUTING.md`](CONTRIBUTING.md)
+2. [`docs/SETUP.md`](docs/SETUP.md)
+3. [`docs/RULES.md`](docs/RULES.md)
+4. [`docs/FINDINGS.md`](docs/FINDINGS.md)
+5. [`docs/ALTERNATIVES.md`](docs/ALTERNATIVES.md)
+6. [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+7. [`docs/CLIENT.md`](docs/CLIENT.md)
+
+The match contract is the only deployed contract
+(`play.engkwentro.testnet`). Registry and vault are compiled in this tree
+and are not deployed.
+
+- [Announcements](https://github.com/jedau/engkwentro/discussions/categories/announcements)
+- [General](https://github.com/jedau/engkwentro/discussions/categories/general)
+- [Ideas](https://github.com/jedau/engkwentro/discussions/categories/ideas)
+- [Bug reports](https://github.com/jedau/engkwentro/discussions/categories/bug-reports)
+- [Polls](https://github.com/jedau/engkwentro/discussions/categories/polls)
+- [Support](https://github.com/jedau/engkwentro/discussions/categories/support)
+
+Questions go to Support. This repository has no Q&A category.
 
 ## Docs
 
