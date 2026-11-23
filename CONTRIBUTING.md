@@ -35,14 +35,14 @@ flutter analyze
 Tests from [docs/SETUP.md](docs/SETUP.md):
 
 ```bash
-cargo test -p engkwentro
-cd client && flutter test
+(cd contracts && cargo test -p engkwentro)
+(cd client && flutter test)
 ```
 
 Commit subject, locally:
 
 ```bash
-bash scripts/check-commit-message.sh -m "type: subject"
+bash scripts/check-commit-message.sh -m "docs: update contributing guide"
 ```
 
 [`.github/workflows/commit-messages.yml`](.github/workflows/commit-messages.yml) checks every commit subject and the pull request title. `--no-verify` skips the local hook and still fails that workflow. Format and lint are not in that workflow.
