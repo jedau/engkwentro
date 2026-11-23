@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: General
+    url: https://github.com/jedau/engkwentro/discussions/categories/general
+    about: Talk that is not a bug or a feature. It stays here until a maintainer spends an issue number.
+  - name: Ideas
+    url: https://github.com/jedau/engkwentro/discussions/categories/ideas
+    about: Feature talk stays in Ideas until a maintainer spends an issue number.
+  - name: Bug reports
+    url: https://github.com/jedau/engkwentro/discussions/categories/bug-reports
+    about: A discussion, not the bug form. Use the bug report form when you have steps and versions.
+  - name: Support
+    url: https://github.com/jedau/engkwentro/discussions/categories/support
+    about: Questions. This repository has no Q&A category.

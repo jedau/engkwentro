@@ -18,7 +18,7 @@ That sets `core.hooksPath` to `.githooks`. It does not need Node, Flutter, or Ca
 
 ## What to run
 
-There is no `scripts/check.sh`. Before a pull request, run the checks that are in the repo.
+Before a pull request, run the checks that are in the repo.
 
 Format and lint by hand. [STYLEGUIDE.md](STYLEGUIDE.md) says no editor setting or workflow runs them.
 
@@ -35,8 +35,11 @@ flutter analyze
 Tests from [docs/SETUP.md](docs/SETUP.md):
 
 ```bash
-(cd contracts && cargo test -p engkwentro)
-(cd client && flutter test)
+# from contracts/
+cargo test -p engkwentro
+
+# from client/
+flutter test
 ```
 
 Commit subject, locally:
@@ -45,7 +48,7 @@ Commit subject, locally:
 bash scripts/check-commit-message.sh -m "docs: update contributing guide"
 ```
 
-[`.github/workflows/commit-messages.yml`](.github/workflows/commit-messages.yml) checks every commit subject and the pull request title. `--no-verify` skips the local hook and still fails that workflow. Format and lint are not in that workflow.
+[`.github/workflows/commit-messages.yml`](.github/workflows/commit-messages.yml) runs `scripts/check-commit-message.sh` on the pull request title and `scripts/check-commit-range.sh` on every commit subject. `--no-verify` skips the local hook and still fails that workflow. Format and lint are not in that workflow.
 
 ## Commit messages
 
@@ -70,7 +73,7 @@ Pull request titles use the same form. A squash merge writes the title as the co
 
 ## Pull request
 
-- Tests for the change: `cargo test -p engkwentro` and `cd client && flutter test`.
+- Tests for the change: `cargo test -p engkwentro` from `contracts/`, and `flutter test` from `client/`.
 - Docs if behavior changed.
 - [`.github/CODEOWNERS`](.github/CODEOWNERS) requests `@jedau` on every pull request.
 

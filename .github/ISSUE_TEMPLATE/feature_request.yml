@@ -1,0 +1,44 @@
+name: Feature request
+description: A change that lets someone do something they cannot do now.
+title: "[FEAT] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature talk stays in Ideas until a maintainer spends an issue number.
+        Link that discussion. Do not use this form for a question.
+  - type: input
+    id: ideas
+    attributes:
+      label: Ideas discussion
+      description: Link to the Ideas discussion, not the category page.
+    validations:
+      required: true
+  - type: textarea
+    id: afterward
+    attributes:
+      label: What someone can do afterward
+      description: What someone can do afterward that they cannot do now.
+    validations:
+      required: true
+  - type: dropdown
+    id: part
+    attributes:
+      label: Which part it touches
+      description: Select every part this change touches.
+      multiple: true
+      options:
+        - client
+        - match contract
+        - registry
+        - vault
+    validations:
+      required: true
+  - type: checkboxes
+    id: closed-designs
+    attributes:
+      label: Closed designs
+      options:
+        - label: This does not revive a Merkle composition check, a mid-game reveal, or a platform decrypt key
+          required: true
