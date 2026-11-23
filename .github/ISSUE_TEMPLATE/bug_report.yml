@@ -1,0 +1,82 @@
+name: Bug report
+description: Something in the client or a contract broke.
+title: "[FIX] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste a private key, seed, salt, `.env` value, or account credential.
+        A security report does not belong on this form. Report it in private: https://github.com/jedau/engkwentro/security/advisories/new
+  - type: textarea
+    id: what-broke
+    attributes:
+      label: What broke
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: What you did, in order.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      description: Where you saw it. For a contract call from your machine, pick desktop.
+      options:
+        - iOS
+        - Android
+        - desktop
+    validations:
+      required: true
+  - type: input
+    id: flutter-version
+    attributes:
+      label: Flutter version
+      description: The version line only, for example `Flutter 3.24.0`. This box is one line. For a contract-only bug, write n/a.
+      placeholder: Flutter 3.24.0
+    validations:
+      required: true
+  - type: input
+    id: rustc-version
+    attributes:
+      label: rustc version
+      description: For a contract bug, output of `rustc --version`. Leave blank for a client-only bug.
+    validations:
+      required: false
+  - type: input
+    id: match-id
+    attributes:
+      label: Match id
+      description: Leave blank when no match exists.
+    validations:
+      required: false
+  - type: input
+    id: transaction-hash
+    attributes:
+      label: Transaction hash
+      description: Leave blank when no transaction exists.
+    validations:
+      required: false
+  - type: checkboxes
+    id: secrets
+    attributes:
+      label: Secrets
+      options:
+        - label: No private key, seed, or salt was pasted
+          required: true
