@@ -70,10 +70,7 @@ class _WalletConnectPageState extends State<WalletConnectPage> {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(EngkwentroColors.navy)
-      ..addJavaScriptChannel(
-        'EngkwentroWc',
-        onMessageReceived: _onMessage,
-      );
+      ..addJavaScriptChannel('EngkwentroWc', onMessageReceived: _onMessage);
     _loadHtml();
   }
 
@@ -84,8 +81,9 @@ class _WalletConnectPageState extends State<WalletConnectPage> {
     }
     final raw = await rootBundle.loadString('assets/wc/connect.html');
     // Bake project id into the page so the ES module can boot offline of query.
-    final safeId =
-        widget.projectId.replaceAll(r'\', r'\\').replaceAll("'", r"\'");
+    final safeId = widget.projectId
+        .replaceAll(r'\', r'\\')
+        .replaceAll("'", r"\'");
     final withId = raw.replaceFirst(
       "params.get('projectId') || ''",
       "params.get('projectId') || '$safeId'",
@@ -110,9 +108,8 @@ class _WalletConnectPageState extends State<WalletConnectPage> {
         case 'connected':
           final accountId = data['accountId'] as String? ?? '';
           if (!mounted) return;
-          Navigator.of(context).pop(
-            WalletConnectResult(accountId: accountId, uri: _uri),
-          );
+          Navigator.of(context)
+              .pop(WalletConnectResult(accountId: accountId, uri: _uri));
         case 'error':
           setState(() => _status = data['message'] as String? ?? 'Error');
         case 'disconnected':
@@ -150,10 +147,7 @@ class _WalletConnectPageState extends State<WalletConnectPage> {
         title: const Text('WalletConnect'),
         actions: [
           if (uri != null)
-            PixelTextButton(
-              label: 'Open',
-              onPressed: _openUriExternally,
-            ),
+            PixelTextButton(label: 'Open', onPressed: _openUriExternally),
         ],
       ),
       body: missing
@@ -262,15 +256,9 @@ class _PairingOverlay extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               const SizedBox(height: 16),
-              PixelButton(
-                label: 'Open wallet',
-                onPressed: onOpen,
-              ),
+              PixelButton(label: 'Open wallet', onPressed: onOpen),
               const SizedBox(height: 8),
-              PixelTextButton(
-                label: 'Copy connection link',
-                onPressed: onCopy,
-              ),
+              PixelTextButton(label: 'Copy connection link', onPressed: onCopy),
             ],
           ),
         ),
@@ -314,7 +302,10 @@ class _MissingProjectIdBody extends StatelessWidget {
                 style: body,
               ),
               const SizedBox(height: 16),
-              Text('1. Open Reown Cloud and create a free project.', style: body),
+              Text(
+                '1. Open Reown Cloud and create a free project.',
+                style: body,
+              ),
               Text('2. Copy the Project ID.', style: body),
               Text(
                 '3. Copy client/dart_defines.json.example → '
@@ -327,10 +318,7 @@ class _MissingProjectIdBody extends StatelessWidget {
                 style: body,
               ),
               const SizedBox(height: 20),
-              PixelButton(
-                label: 'Open Reown Cloud',
-                onPressed: _openCloud,
-              ),
+              PixelButton(label: 'Open Reown Cloud', onPressed: _openCloud),
               const SizedBox(height: 8),
               Text(
                 'Or use Create play account on the previous screen — no '

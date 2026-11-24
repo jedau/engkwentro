@@ -75,12 +75,27 @@ class MatchGame {
   /// Drops the canonical 21-piece roster onto [side]'s home rows.
   void _placeDefault(Side side) {
     final ranks = <Rank>[
-      Rank.private, Rank.private, Rank.private, Rank.private, Rank.private, Rank.private,
-      Rank.sergeant, Rank.secondLieutenant, Rank.firstLieutenant,
-      Rank.captain, Rank.major, Rank.lieutenantColonel, Rank.colonel,
-      Rank.brigadierGeneral, Rank.majorGeneral, Rank.lieutenantGeneral,
-      Rank.general, Rank.fiveStarGeneral,
-      Rank.spy, Rank.spy, Rank.flag,
+      Rank.private,
+      Rank.private,
+      Rank.private,
+      Rank.private,
+      Rank.private,
+      Rank.private,
+      Rank.sergeant,
+      Rank.secondLieutenant,
+      Rank.firstLieutenant,
+      Rank.captain,
+      Rank.major,
+      Rank.lieutenantColonel,
+      Rank.colonel,
+      Rank.brigadierGeneral,
+      Rank.majorGeneral,
+      Rank.lieutenantGeneral,
+      Rank.general,
+      Rank.fiveStarGeneral,
+      Rank.spy,
+      Rank.spy,
+      Rank.flag,
     ];
     final front = side == Side.a ? 0 : 7;
     final mid = side == Side.a ? 1 : 6;
@@ -99,8 +114,7 @@ class MatchGame {
   }
 
   /// Whether [s] is on the enemy home rank for [side].
-  bool onEnemyHome(Side side, int s) =>
-      rankOf(s) == (side == Side.a ? 7 : 0);
+  bool onEnemyHome(Side side, int s) => rankOf(s) == (side == Side.a ? 7 : 0);
 
   /// Orthogonal one-step, on the board, not a stay.
   ///
@@ -176,14 +190,17 @@ class MatchGame {
       case Exchange.attackerWins:
         board[to] = atk;
         board[from] = null;
-        log = '${rankNames[atk.rank.index]} takes ${rankNames[def.rank.index]}.';
+        log =
+            '${rankNames[atk.rank.index]} takes ${rankNames[def.rank.index]}.';
       case Exchange.defenderWins:
         board[from] = null;
-        log = '${rankNames[def.rank.index]} holds against ${rankNames[atk.rank.index]}.';
+        log =
+            '${rankNames[def.rank.index]} holds against ${rankNames[atk.rank.index]}.';
       case Exchange.bothEliminated:
         board[from] = null;
         board[to] = null;
-        log = '${rankNames[atk.rank.index]} and ${rankNames[def.rank.index]} split.';
+        log =
+            '${rankNames[atk.rank.index]} and ${rankNames[def.rank.index]} split.';
     }
     if (flag) {
       result = '${_name(atk.side)} wins — flag captured.';

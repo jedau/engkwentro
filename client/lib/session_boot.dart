@@ -38,7 +38,9 @@ Future<NetSession> createOpenMatch(
     openChallenge: true,
   );
   await session.create(clockMinutes: clockMinutes, stakeYocto: stakeYocto);
-  final key = session.joinKey != null ? formatJoinKey(session.joinKey!) : 'the match key';
+  final key = session.joinKey != null
+      ? formatJoinKey(session.joinKey!)
+      : 'the match key';
   session.log = 'Share $key. Waiting for opponent.';
   return session;
 }

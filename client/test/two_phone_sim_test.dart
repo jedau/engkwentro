@@ -70,12 +70,14 @@ class _Table {
     final deadline = nowMs + seconds * 1000;
     while (!done()) {
       if (nowMs >= deadline) {
-        fail('timed out after ${seconds}s waiting for $what\n'
-            'chain=${chain.state} running="${chain.runningSide}"\n'
-            'alice: ${alice.session.statusLine} / ${alice.session.activity()} '
-            'errors=${alice.errors}\n'
-            'bob: ${bob.session.statusLine} / ${bob.session.activity()} '
-            'errors=${bob.errors}');
+        fail(
+          'timed out after ${seconds}s waiting for $what\n'
+          'chain=${chain.state} running="${chain.runningSide}"\n'
+          'alice: ${alice.session.statusLine} / ${alice.session.activity()} '
+          'errors=${alice.errors}\n'
+          'bob: ${bob.session.statusLine} / ${bob.session.activity()} '
+          'errors=${bob.errors}',
+        );
       }
       async.elapse(const Duration(milliseconds: 50));
     }
@@ -208,7 +210,11 @@ void main() {
   test('driver cadence', () {
     final d = MatchDriver(
       NetSession(
-        near: FakeNear(FakeChain(elapsed: () => Duration.zero), 'a.testnet', NetProfile(seed: 1)),
+        near: FakeNear(
+          FakeChain(elapsed: () => Duration.zero),
+          'a.testnet',
+          NetProfile(seed: 1),
+        ),
         mailbox: FakeMailbox({}, NetProfile(seed: 1)),
         sideA: true,
         opponent: '',
@@ -220,16 +226,26 @@ void main() {
 
   test('normal network, tap notes off: same invariants, larger corrections', () {
     FakeAsync().run((async) {
-      final t = _Table(async, netA: NetProfile(seed: 11), netB: NetProfile(seed: 12));
+      final t = _Table(
+        async,
+        netA: NetProfile(seed: 11),
+        netB: NetProfile(seed: 12),
+      );
       t.alice.session.tapNotes = false;
       t.bob.session.tapNotes = false;
       t.kickoff();
       final obs = t.play(moves: 70);
       t.finish(obs);
       // ignore: avoid_print
-      print('${obs.report('normal network, tap notes off')}\n${_fairness(t, obs)}');
+      print(
+        '${obs.report('normal network, tap notes off')}\n${_fairness(t, obs)}',
+      );
 
-      expect(obs.violations, isEmpty, reason: obs.violations.take(8).join('\n'));
+      expect(
+        obs.violations,
+        isEmpty,
+        reason: obs.violations.take(8).join('\n'),
+      );
       expect(obs.ownClockUps, isEmpty);
       expect(obs.faceVsBankNs.every((d) => d == 0), isTrue);
       expect(obs.restDisagreementNs, 0);
@@ -240,14 +256,22 @@ void main() {
 
   test('normal network: a full game, every screen invariant holds', () {
     FakeAsync().run((async) {
-      final t = _Table(async, netA: NetProfile(seed: 11), netB: NetProfile(seed: 12));
+      final t = _Table(
+        async,
+        netA: NetProfile(seed: 11),
+        netB: NetProfile(seed: 12),
+      );
       t.kickoff();
       final obs = t.play(moves: 70);
       t.finish(obs);
       // ignore: avoid_print
       print('${obs.report('normal network')}\n${_fairness(t, obs)}');
 
-      expect(obs.violations, isEmpty, reason: obs.violations.take(8).join('\n'));
+      expect(
+        obs.violations,
+        isEmpty,
+        reason: obs.violations.take(8).join('\n'),
+      );
       expect(obs.ownClockUps, isEmpty);
       expect(t.alice.errors, isEmpty);
       expect(t.bob.errors, isEmpty);
@@ -260,7 +284,11 @@ void main() {
       expect((t.bob.session.near as FakeNear).maxInFlight, 1);
       // Nobody pays for the network on a normal connection.
       for (final mv in t.chain.moves) {
-        expect(mv.chargedNs, mv.claimedThinkNs, reason: 'move ${mv.side}${mv.nonce}');
+        expect(
+          mv.chargedNs,
+          mv.claimedThinkNs,
+          reason: 'move ${mv.side}${mv.nonce}',
+        );
       }
       expect(t.chain.moves.length, greaterThanOrEqualTo(20));
     });
@@ -287,7 +315,11 @@ void main() {
         print('${obs.report('rough network #$seed')}\n${_fairness(t, obs)}');
 
         // Latency may be anything; what is on screen must still be true.
-        expect(obs.violations, isEmpty, reason: obs.violations.take(8).join('\n'));
+        expect(
+          obs.violations,
+          isEmpty,
+          reason: obs.violations.take(8).join('\n'),
+        );
         expect(obs.ownClockUps, isEmpty);
         expect(obs.restDisagreementNs, 0);
         // The stale-reply guard was actually exercised.
@@ -344,7 +376,11 @@ void main() {
       );
       // And play carries on from there.
       final before = t.chain.moves.length;
-      t.until(() => t.chain.moves.length >= before + 6, seconds: 180, what: 'more moves');
+      t.until(
+        () => t.chain.moves.length >= before + 6,
+        seconds: 180,
+        what: 'more moves',
+      );
       t.finish(obs);
       expect(obs.ownClockUps, isEmpty);
       expect(
@@ -357,7 +393,11 @@ void main() {
 
   test('the same two squares can be fought over twice', () {
     FakeAsync().run((async) {
-      final t = _Table(async, netA: NetProfile(seed: 51), netB: NetProfile(seed: 52));
+      final t = _Table(
+        async,
+        netA: NetProfile(seed: 51),
+        netB: NetProfile(seed: 52),
+      );
       t.kickoff();
       final a = t.alice.session;
       final b = t.bob.session;
@@ -401,8 +441,15 @@ void main() {
       // First fight on x -> y: the private loses.
       aliceMove(x, y);
       expect(a.activity()?.title, 'Battle!');
-      t.until(() => t.chain.state == 'InProgress', seconds: 60, what: 'first fight');
-      t.until(() => a.occupancy[x] == 0 && b.occupancy[x] == 0, what: 'board after fight');
+      t.until(
+        () => t.chain.state == 'InProgress',
+        seconds: 60,
+        what: 'first fight',
+      );
+      t.until(
+        () => a.occupancy[x] == 0 && b.occupancy[x] == 0,
+        what: 'board after fight',
+      );
       expect(t.chain.occupancy[y], general);
 
       // Second private steps onto x, then attacks x -> y again.
@@ -428,7 +475,11 @@ void main() {
 
   test('a quiet step onto the far rank is confirmed by both phones', () {
     FakeAsync().run((async) {
-      final t = _Table(async, netA: NetProfile(seed: 61), netB: NetProfile(seed: 62));
+      final t = _Table(
+        async,
+        netA: NetProfile(seed: 61),
+        netB: NetProfile(seed: 62),
+      );
       t.kickoff();
       final a = t.alice.session;
       final b = t.bob.session;
@@ -442,7 +493,10 @@ void main() {
         occ[MatchGame.sq(0, 0)] = a.ranks.indexOf(Rank.sergeant) + 1;
         occ[bobSpare] = b.ranks.indexOf(Rank.sergeant) + 22;
       });
-      t.until(() => a.occupancy[from] == runner && b.occupancy[from] == runner, what: 'edited board');
+      t.until(
+        () => a.occupancy[from] == runner && b.occupancy[from] == runner,
+        what: 'edited board',
+      );
       if (t.chain.runningSide == t.bob.side) {
         t.until(() => b.canAct, what: 'Bob to move');
         t.bob.driver.move(bobSpare, bobSpare + 1);
@@ -455,7 +509,8 @@ void main() {
       expect(a.activity()?.title, 'Moving…');
       expect(a.statusLine, isNot(contains('Breakthrough')));
       t.until(
-        () => t.chain.state == 'InProgress' && t.chain.runningSide == t.bob.side,
+        () =>
+            t.chain.state == 'InProgress' && t.chain.runningSide == t.bob.side,
         seconds: 30,
         what: 'both arrival reports',
       );
@@ -473,7 +528,11 @@ void main() {
 
   test('a Flag on the far rank wins if the reply does not challenge it', () {
     FakeAsync().run((async) {
-      final t = _Table(async, netA: NetProfile(seed: 81), netB: NetProfile(seed: 82));
+      final t = _Table(
+        async,
+        netA: NetProfile(seed: 81),
+        netB: NetProfile(seed: 82),
+      );
       t.kickoff();
       final a = t.alice.session;
       final b = t.bob.session;
@@ -488,7 +547,10 @@ void main() {
         occ[MatchGame.sq(0, 0)] = a.ranks.indexOf(Rank.sergeant) + 1;
         occ[bobSpare] = b.ranks.indexOf(Rank.sergeant) + 22;
       });
-      t.until(() => a.occupancy[from] == flag && b.occupancy[from] == flag, what: 'edited board');
+      t.until(
+        () => a.occupancy[from] == flag && b.occupancy[from] == flag,
+        what: 'edited board',
+      );
       if (t.chain.runningSide == t.bob.side) {
         t.until(() => b.canAct, what: 'Bob to move');
         t.bob.driver.move(bobSpare, bobStep);
@@ -497,7 +559,10 @@ void main() {
       t.until(() => a.canAct, seconds: 60, what: 'Alice to move');
       // No chrome names the home-row step.
       t.alice.driver.move(from, to);
-      t.until(() => a.activity()?.title == 'Moving…' || a.play?.waiting == true, what: 'silent confirm');
+      t.until(
+        () => a.activity()?.title == 'Moving…' || a.play?.waiting == true,
+        what: 'silent confirm',
+      );
       t.until(
         () =>
             t.chain.state == 'Breakthrough' &&
@@ -515,9 +580,15 @@ void main() {
       // Bob moves elsewhere: Alice wins, Flag is revealed.
       final src = b.occupancy[bobSpare] != 0 ? bobSpare : bobStep;
       t.bob.driver.move(src, src + 1);
-      t.until(() => t.chain.state == 'Ended', seconds: 30, what: 'breakthrough win');
       t.until(
-        () => a.outcomeReason == 'FlagBreakthrough' && b.outcomeReason == 'FlagBreakthrough',
+        () => t.chain.state == 'Ended',
+        seconds: 30,
+        what: 'breakthrough win',
+      );
+      t.until(
+        () =>
+            a.outcomeReason == 'FlagBreakthrough' &&
+            b.outcomeReason == 'FlagBreakthrough',
         seconds: 20,
         what: 'both phones see the win',
       );
@@ -541,15 +612,25 @@ void main() {
       final mover = t.chain.runningSide == t.alice.side ? t.alice : t.bob;
       final other = identical(mover, t.alice) ? t.bob : t.alice;
       // Nobody moves. The mover's own clock reaches zero first.
-      t.until(() => mover.session.remainingNs(mover.side) == 0, seconds: 70, what: 'zero');
+      t.until(
+        () => mover.session.remainingNs(mover.side) == 0,
+        seconds: 70,
+        what: 'zero',
+      );
       expect(mover.session.statusLine, 'Out of time');
       expect(mover.session.canAct, isFalse);
       expect(t.chain.state, isNot('Ended'));
-      t.until(() => t.chain.state == 'Ended', seconds: 12, what: 'timeout claim');
+      t.until(
+        () => t.chain.state == 'Ended',
+        seconds: 12,
+        what: 'timeout claim',
+      );
       final overrun = t.chain.nowNs - t.chain.turnStartedAtNs - 60 * sec;
       expect(overrun, greaterThanOrEqualTo(lagCapNs));
       t.until(
-        () => mover.session.outcomeReason == 'Timeout' && other.session.outcomeReason == 'Timeout',
+        () =>
+            mover.session.outcomeReason == 'Timeout' &&
+            other.session.outcomeReason == 'Timeout',
         seconds: 15,
         what: 'both phones to show the result',
       );

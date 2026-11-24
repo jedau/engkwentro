@@ -489,8 +489,7 @@ class _PlayViewState extends State<PlayView> {
                   if (handed && game.result == null)
                     PixelTextButton(
                       label: 'Resign',
-                      onPressed: () =>
-                          setState(() => game.resign(game.toMove)),
+                      onPressed: () => setState(() => game.resign(game.toMove)),
                     ),
                 ],
               ),

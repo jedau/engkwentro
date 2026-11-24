@@ -28,10 +28,7 @@ class StakeOption {
 /// Create-flow choices: clock bank + optional stake.
 class CreateMatchChoices {
   /// [clockMinutes] 1–15; [stake] is the per-player escrow.
-  const CreateMatchChoices({
-    required this.clockMinutes,
-    required this.stake,
-  });
+  const CreateMatchChoices({required this.clockMinutes, required this.stake});
 
   /// Per-player clock bank in minutes.
   final int clockMinutes;
@@ -67,7 +64,8 @@ String? nearTextToYocto(String raw) {
   var frac = parts.length == 2 ? parts[1] : '';
   if (frac.length > 24) return null;
   frac = frac.padRight(24, '0');
-  final yocto = BigInt.parse(whole) * BigInt.parse(nearYocto) + BigInt.parse(frac);
+  final yocto =
+      BigInt.parse(whole) * BigInt.parse(nearYocto) + BigInt.parse(frac);
   return yocto.toString();
 }
 
@@ -91,10 +89,14 @@ String formatNearYocto(String yocto) {
     return '${v ~/ one} NEAR';
   }
   final s = v.toString().padLeft(25, '0');
-  final whole = s.substring(0, s.length - 24).replaceFirst(RegExp(r'^0+(?=.)'), '');
+  final whole = s
+      .substring(0, s.length - 24)
+      .replaceFirst(RegExp(r'^0+(?=.)'), '');
   var frac = s.substring(s.length - 24).replaceFirst(RegExp(r'0+$'), '');
   if (frac.isEmpty) return '$whole NEAR';
-  if (frac.length > 6) frac = frac.substring(0, 6).replaceFirst(RegExp(r'0+$'), '');
+  if (frac.length > 6) {
+    frac = frac.substring(0, 6).replaceFirst(RegExp(r'0+$'), '');
+  }
   return '$whole.$frac NEAR';
 }
 

@@ -156,14 +156,17 @@ class _Match {
   String? pendingBy;
   String? pendingExchange;
   bool pendingFlag = false;
+
   /// Landing square while [state] is `Breakthrough`, else null.
   int? breakthroughAt;
+
   /// Who arrived, while in `Breakthrough`.
   String? breakthroughBy;
   List<String> outcome = const [];
   String? settlement;
   bool flippedA = false;
   bool flippedB = false;
+
   /// Per-player stake in yocto as a decimal string (`0` = free).
   String stake = '0';
   bool paid = false;
@@ -250,7 +253,11 @@ class FakeChain {
   ///
   /// Completes when the effect is visible, with the return value, or with
   /// the panic the client would see. No network delay is added here.
-  Future<Object?> execute(String caller, String method, Map<String, dynamic> args) {
+  Future<Object?> execute(
+    String caller,
+    String method,
+    Map<String, dynamic> args,
+  ) {
     final at = height + 2;
     final wait = Duration(microseconds: (timeOf(at) - nowNs) ~/ 1000);
     return Future<Object?>.delayed(wait, () {
@@ -341,7 +348,9 @@ class FakeChain {
   }
 
   bool _legal(String side, int from, int to) =>
-      _step(from, to) && _owner(_m.occ[from]) == side && _owner(_m.occ[to]) != side;
+      _step(from, to) &&
+      _owner(_m.occ[from]) == side &&
+      _owner(_m.occ[to]) != side;
 
   bool _hasMove(String side) {
     for (var from = 0; from < 72; from++) {
@@ -353,7 +362,8 @@ class FakeChain {
     return false;
   }
 
-  static bool _enemyHome(String side, int sq) => sq ~/ 9 == (side == 'A' ? 7 : 0);
+  static bool _enemyHome(String side, int sq) =>
+      sq ~/ 9 == (side == 'A' ? 7 : 0);
 
   void _end(List<String> outcome) {
     _m.state = 'Ended';
@@ -394,7 +404,9 @@ class FakeChain {
   void _finishTurn(String mover, int now) {
     final incoming = _other(mover);
     if (!_hasMove(incoming)) {
-      final reason = _m.state == 'Breakthrough' ? 'FlagBreakthrough' : 'Immobilised';
+      final reason = _m.state == 'Breakthrough'
+          ? 'FlagBreakthrough'
+          : 'Immobilised';
       _m.breakthroughAt = null;
       _m.breakthroughBy = null;
       _end(['Win', mover, reason]);
@@ -406,7 +418,12 @@ class FakeChain {
     _m.state = 'InProgress';
   }
 
-  Object? _apply(String caller, String method, Map<String, dynamic> args, int now) {
+  Object? _apply(
+    String caller,
+    String method,
+    Map<String, dynamic> args,
+    int now,
+  ) {
     switch (method) {
       case 'create_match':
         _exists = true;
@@ -479,7 +496,12 @@ class FakeChain {
         _applyMove(caller, args, now);
         return null;
       case 'resolve_challenge':
-        _report(caller, args['exchange'] as String, args['flag_captured'] as bool, now);
+        _report(
+          caller,
+          args['exchange'] as String,
+          args['flag_captured'] as bool,
+          now,
+        );
         return null;
       case 'confirm_arrival':
         _report(caller, null, args['is_flag'] as bool, now);
@@ -515,7 +537,9 @@ class FakeChain {
         }
         return null;
       case 'settle':
-        if (_m.settlement != 'AwaitingFlip') throw _Panic('illegal source state');
+        if (_m.settlement != 'AwaitingFlip') {
+          throw _Panic('illegal source state');
+        }
         if (!_m.flippedA || !_m.flippedB) {
           throw _Panic('both sides have not been verified');
         }
@@ -526,7 +550,9 @@ class FakeChain {
   }
 
   void _applyMove(String caller, Map<String, dynamic> args, int now) {
-    if (_m.state == 'Ended' || _m.state == 'WaitingForArbiter' || _m.toMove.isEmpty) {
+    if (_m.state == 'Ended' ||
+        _m.state == 'WaitingForArbiter' ||
+        _m.toMove.isEmpty) {
       throw _Panic('illegal source state');
     }
     final side = _m.toMove;
@@ -719,21 +745,28 @@ class FakeNear extends NearClient {
   }
 
   @override
-  Future<dynamic> view(String method, [Object args = const {}]) => _tracked(() async {
-    views++;
-    if (net.roll(net.viewFailChance)) {
-      await Future<void>.delayed(_readDeadline * 2);
-      throw TimeoutException('NEAR RPC query timed out');
-    }
-    if (net.roll(net.viewHangChance)) {
-      await Future<void>.delayed(_readDeadline);
-    }
-    await Future<void>.delayed(net.leg());
-    final lag = net.roll(net.lagChance) ? 1 + net.rng.nextInt(net.maxLagBlocks) : 0;
-    final out = chain.view(method, args as Map<String, dynamic>, chain.height - lag);
-    await Future<void>.delayed(net.leg());
-    return out;
-  });
+  Future<dynamic> view(String method, [Object args = const {}]) =>
+      _tracked(() async {
+        views++;
+        if (net.roll(net.viewFailChance)) {
+          await Future<void>.delayed(_readDeadline * 2);
+          throw TimeoutException('NEAR RPC query timed out');
+        }
+        if (net.roll(net.viewHangChance)) {
+          await Future<void>.delayed(_readDeadline);
+        }
+        await Future<void>.delayed(net.leg());
+        final lag = net.roll(net.lagChance)
+            ? 1 + net.rng.nextInt(net.maxLagBlocks)
+            : 0;
+        final out = chain.view(
+          method,
+          args as Map<String, dynamic>,
+          chain.height - lag,
+        );
+        await Future<void>.delayed(net.leg());
+        return out;
+      });
 
   @override
   Future<Map<String, dynamic>> call(
@@ -754,7 +787,11 @@ class FakeNear extends NearClient {
     Object? decoded;
     Object? failure;
     try {
-      decoded = await chain.execute(accountId, method, args as Map<String, dynamic>);
+      decoded = await chain.execute(
+        accountId,
+        method,
+        args as Map<String, dynamic>,
+      );
     } catch (e) {
       failure = e;
     }

@@ -48,20 +48,20 @@ class MatchLocalState {
 
   /// JSON for [SharedPreferences].
   Map<String, dynamic> toJson() => {
-        'matchId': matchId,
-        'joinKey': joinKey,
-        'accountId': accountId,
-        'sideA': sideA,
-        'rosterReady': rosterReady,
-        'ranks': [for (final r in ranks) r.index],
-        'squares': [
-          for (final s in squares) [s.$1, s.$2],
-        ],
-        'salts': [
-          for (final salt in salts)
-            salt.map((b) => b.toRadixString(16).padLeft(2, '0')).join(),
-        ],
-      };
+    'matchId': matchId,
+    'joinKey': joinKey,
+    'accountId': accountId,
+    'sideA': sideA,
+    'rosterReady': rosterReady,
+    'ranks': [for (final r in ranks) r.index],
+    'squares': [
+      for (final s in squares) [s.$1, s.$2],
+    ],
+    'salts': [
+      for (final salt in salts)
+        salt.map((b) => b.toRadixString(16).padLeft(2, '0')).join(),
+    ],
+  };
 
   /// Parses [toJson] output.
   factory MatchLocalState.fromJson(Map<String, dynamic> json) {
@@ -74,16 +74,11 @@ class MatchLocalState {
       accountId: json['accountId'] as String,
       sideA: json['sideA'] as bool? ?? true,
       rosterReady: json['rosterReady'] as bool? ?? false,
-      ranks: [
-        for (final i in rankIdx) Rank.values[i as int],
-      ],
+      ranks: [for (final i in rankIdx) Rank.values[i as int]],
       squares: [
-        for (final s in squareRaw)
-          ((s as List)[0] as int, s[1] as int),
+        for (final s in squareRaw) ((s as List)[0] as int, s[1] as int),
       ],
-      salts: [
-        for (final h in saltHex) _hexToBytes(h as String),
-      ],
+      salts: [for (final h in saltHex) _hexToBytes(h as String)],
     );
   }
 }
@@ -112,9 +107,7 @@ class MatchStore {
     final raw = prefs.getString(_key(accountId));
     if (raw == null || raw.isEmpty) return null;
     try {
-      return MatchLocalState.fromJson(
-        jsonDecode(raw) as Map<String, dynamic>,
-      );
+      return MatchLocalState.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }

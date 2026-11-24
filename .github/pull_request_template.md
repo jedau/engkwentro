@@ -8,9 +8,9 @@ The title must be `type: subject` or `type(scope): subject`. `[FIX]` and `[FEAT]
 
 The same commands are in [CONTRIBUTING.md](https://github.com/jedau/engkwentro/blob/main/CONTRIBUTING.md).
 
-- [ ] `cargo fmt` and `cargo clippy` from `contracts/`
+- [ ] `cargo fmt`, `cargo clippy --target wasm32-unknown-unknown --workspace`, and `cargo clippy --all-targets --workspace` from `contracts/`
 - [ ] `dart format .` and `flutter analyze` from `client/`
-- [ ] `cargo test -p engkwentro` from `contracts/`
+- [ ] `cargo test --workspace` from `contracts/`
 - [ ] `flutter test` from `client/`
 - [ ] `scripts/check-commit-message.sh` accepts the title and every commit subject. CI runs `scripts/check-commit-range.sh`
 

@@ -109,8 +109,7 @@ class AuthController extends ChangeNotifier {
   String? get bootError => _bootError;
 
   /// Shorthand for a play-ready session (local signing key present).
-  bool get isLoggedIn =>
-      _session != null && _session!.canSignLocally;
+  bool get isLoggedIn => _session != null && _session!.canSignLocally;
 
   /// Restores local + wallet sessions and wires deep links.
   Future<void> init() async {
@@ -200,8 +199,7 @@ class AuthController extends ChangeNotifier {
         source: AuthSource.walletConnect,
       );
     }
-    _bootError =
-        'WalletConnect linked. Create a play account to submit moves.';
+    _bootError = 'WalletConnect linked. Create a play account to submit moves.';
     notifyListeners();
   }
 

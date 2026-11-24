@@ -6,7 +6,12 @@ void main() {
   test('match id comes from args or create result', () {
     expect(matchIdFromArgs({'match_id': 6}, {}), 6);
     expect(matchIdFromArgs(<String, dynamic>{}, {'decoded': 6}), 6);
-    expect(matchIdFromArgs(<String, dynamic>{}, {'decoded': [7, 'K7M2P9QWX4R8']}), 7);
+    expect(
+      matchIdFromArgs(<String, dynamic>{}, {
+        'decoded': [7, 'K7M2P9QWX4R8'],
+      }),
+      7,
+    );
     expect(matchIdFromArgs(<String, dynamic>{}, {}), isNull);
   });
 

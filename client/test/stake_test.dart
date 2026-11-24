@@ -16,7 +16,10 @@ void main() {
     expect(nearTextToYocto(''), '0');
     expect(nearTextToYocto('1'), nearYocto);
     expect(nearTextToYocto('0.1'), tenthNearYocto);
-    expect(nearTextToYocto('.5'), (BigInt.parse(nearYocto) ~/ BigInt.two).toString());
+    expect(
+      nearTextToYocto('.5'),
+      (BigInt.parse(nearYocto) ~/ BigInt.two).toString(),
+    );
     expect(nearTextToYocto('-1'), isNull);
     expect(nearTextToYocto('abc'), isNull);
   });
@@ -34,10 +37,7 @@ void main() {
   });
 
   test('caption explains free vs winner / rake', () {
-    expect(
-      stakePayoutCaption('0'),
-      contains('does not wager anything'),
-    );
+    expect(stakePayoutCaption('0'), contains('does not wager anything'));
     final oneNear = stakePayoutCaption(nearYocto);
     expect(oneNear, contains('Winner wins'));
     expect(oneNear, contains('App takes'));
