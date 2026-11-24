@@ -73,7 +73,8 @@ reject_secrets() {
   done <<< "$hits"
   if [[ -n "$bad" ]]; then
     echo "Private key material is tracked:" >&2
-    printf '%s' "$bad" >&2
+    # git grep -n is path:line:text. The text is the key, so keep path and line.
+    printf '%s' "$bad" | cut -d: -f1-2 >&2
     exit 1
   fi
 }
