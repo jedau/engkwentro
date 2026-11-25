@@ -78,9 +78,8 @@ class _WalletOnboardingSheetState extends State<WalletOnboardingSheet> {
     if (key == null) return;
     await Clipboard.setData(ClipboardData(text: key));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Private key copied')),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Private key copied')));
   }
 
   Future<void> _onWallet(WalletEntry entry) async {
@@ -170,9 +169,8 @@ class _WalletOnboardingSheetState extends State<WalletOnboardingSheet> {
                 Text(
                   'New to NEAR? Create a play account on this device — funded '
                   'on testnet, ready in seconds. Or connect an existing wallet.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: EngkwentroColors.sand,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: EngkwentroColors.sand),
                 ),
                 const SizedBox(height: 16),
                 if (_createdKey != null && _createdAccountId != null) ...[
@@ -202,11 +200,12 @@ class _WalletOnboardingSheetState extends State<WalletOnboardingSheet> {
                         const SizedBox(height: 8),
                         SelectableText(
                           _createdKey!,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                            fontSize: 14,
-                            color: EngkwentroColors.cream,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontFamily: 'monospace',
+                                fontSize: 14,
+                                color: EngkwentroColors.cream,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         PixelButton(
@@ -391,7 +390,12 @@ class _WalletLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final child = asset.endsWith('.svg')
-        ? SvgPicture.asset(asset, width: size, height: size, fit: BoxFit.contain)
+        ? SvgPicture.asset(
+            asset,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+          )
         : Image.asset(asset, width: size, height: size, fit: BoxFit.contain);
     return SizedBox(width: size, height: size, child: child);
   }

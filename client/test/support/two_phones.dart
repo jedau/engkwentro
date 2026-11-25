@@ -166,7 +166,8 @@ class Bot {
         }
       }
     }
-    if (attacks.isNotEmpty && (quiet.isEmpty || _rng.nextDouble() < attackBias)) {
+    if (attacks.isNotEmpty &&
+        (quiet.isEmpty || _rng.nextDouble() < attackBias)) {
       return attacks[_rng.nextInt(attacks.length)];
     }
     if (quiet.isEmpty) return null;
@@ -176,7 +177,9 @@ class Bot {
       for (final m in quiet)
         if (m.$2 - m.$1 == forward) m,
     ];
-    final pool = advancing.isNotEmpty && _rng.nextDouble() < 0.7 ? advancing : quiet;
+    final pool = advancing.isNotEmpty && _rng.nextDouble() < 0.7
+        ? advancing
+        : quiet;
     return pool[_rng.nextInt(pool.length)];
   }
 }
@@ -347,7 +350,11 @@ class Observer {
           _fail(nowMs, p, 'attack in flight under "${modal.title}"');
         }
         if (mine != tap.faceNs) {
-          _fail(nowMs, p, 'clock moved after the tap by ${_ms(mine - tap.faceNs)} ms');
+          _fail(
+            nowMs,
+            p,
+            'clock moved after the tap by ${_ms(mine - tap.faceNs)} ms',
+          );
         }
       } else {
         tap.settledAtMs = nowMs;
@@ -363,7 +370,11 @@ class Observer {
               snap.nonceOf(p.them) == tap.oppNonce &&
               !snap.waiting &&
               snap.state != 'Ended') {
-            _fail(nowMs, p, 'battle overlay dropped before the fight was shown');
+            _fail(
+              nowMs,
+              p,
+              'battle overlay dropped before the fight was shown',
+            );
           }
         }
       }
@@ -416,7 +427,8 @@ class Observer {
     if (ra == null || rb == null) return;
 
     final bothWaiting =
-        sa.statusLine == "Opponent's turn" && sb.statusLine == "Opponent's turn";
+        sa.statusLine == "Opponent's turn" &&
+        sb.statusLine == "Opponent's turn";
     if (bothWaiting) {
       if (_bothSince < 0) _bothSince = nowMs;
     } else if (_bothSince >= 0) {
@@ -454,7 +466,10 @@ class Observer {
   static String _dist(List<int> xs, {int scale = 1, String unit = 'ms'}) {
     if (xs.isEmpty) return 'none';
     final s = [...xs]..sort();
-    String at(double q) => (s[min(s.length - 1, (s.length * q).floor())] / scale).round().toString();
+    String at(double q) =>
+        (s[min(s.length - 1, (s.length * q).floor())] / scale)
+            .round()
+            .toString();
     return 'n=${s.length} p50=${at(0.5)} p90=${at(0.9)} max=${(s.last / scale).round()} $unit';
   }
 
@@ -462,7 +477,10 @@ class Observer {
   String report(String title) {
     const m = 1000000;
     final landed = [...botA.taps, ...botB.taps].where((t) => t.landed).length;
-    final failed = [...botA.taps, ...botB.taps].where((t) => t.settledAtMs != null && !t.landed).length;
+    final failed = [
+      ...botA.taps,
+      ...botB.taps,
+    ].where((t) => t.settledAtMs != null && !t.landed).length;
     final visibleRewinds = oppRewinds.where((r) => r >= 250 * m).toList();
     return [
       '--- $title ---',
@@ -477,7 +495,8 @@ class Observer {
       'same running clock, phone vs phone: max ${_ms(runningDisagreementNs)} ms',
       'same resting clock, phone vs phone: max ${_ms(restDisagreementNs)} ms',
       'both screens "Opponent\'s turn": ${_dist(bothWaitingMs)}',
-      if (truth != null) 'turn start on chain -> "Your turn" on screen: ${_dist(noticeMs)}',
+      if (truth != null)
+        'turn start on chain -> "Your turn" on screen: ${_dist(noticeMs)}',
       'errors shown: ${a.name}=${a.errors.length} ${b.name}=${b.errors.length}',
       for (final e in {...a.errors, ...b.errors}) '    "$e"',
       'opponent taps learned from the mailbox first: ${a.name}=${a.session.tapNotesUsed} ${b.name}=${b.session.tapNotesUsed}',

@@ -82,7 +82,9 @@ class NearClient {
     } else if (raw.length == 32) {
       _seed = raw;
       final pair = await Ed25519().newKeyPairFromSeed(_seed!);
-      _pub = Uint8List.fromList(await pair.extractPublicKey().then((p) => p.bytes));
+      _pub = Uint8List.fromList(
+        await pair.extractPublicKey().then((p) => p.bytes),
+      );
     } else {
       throw ArgumentError('NEAR key must be 32 or 64 bytes');
     }
@@ -136,11 +138,9 @@ class NearClient {
     final signedB64 = base64.encode(signed.toBytes());
     Map<String, dynamic> map;
     try {
-      final res = await _rpc(
-        'broadcast_tx_commit',
-        [signedB64],
-        timeout: _commitTimeout,
-      );
+      final res = await _rpc('broadcast_tx_commit', [
+        signedB64,
+      ], timeout: _commitTimeout);
       map = Map<String, dynamic>.from(res as Map);
     } catch (e) {
       // The node gave up waiting, or our socket did. The transaction may
@@ -170,14 +170,16 @@ class NearClient {
       }
     }
     final burnt = tokensBurntFromTx(map);
-    audit.add(AuditEntry(
-      txHash: txHash,
-      method: method,
-      account: accountId,
-      matchId: matchIdFromArgs(args, map),
-      tokensBurnt: burnt,
-      tgas: (map['tgas'] as double?) ?? 0,
-    ));
+    audit.add(
+      AuditEntry(
+        txHash: txHash,
+        method: method,
+        account: accountId,
+        matchId: matchIdFromArgs(args, map),
+        tokensBurnt: burnt,
+        tgas: (map['tgas'] as double?) ?? 0,
+      ),
+    );
     return map;
   }
 
@@ -361,7 +363,8 @@ List<String> _rpcList(String preferred) {
     'https://rpc.testnet.near.org',
   ];
   return [
-    if (preferred.isNotEmpty && !preferred.contains('rpc.testnet.near.org')) preferred,
+    if (preferred.isNotEmpty && !preferred.contains('rpc.testnet.near.org'))
+      preferred,
     ...fallbacks,
   ];
 }

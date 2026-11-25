@@ -307,17 +307,14 @@ class _NetPlayPageState extends State<NetPlayPage> {
         : box.localToGlobal(Offset.zero) & box.size;
     try {
       await SharePlus.instance.share(
-        ShareParams(
-          text: formatted,
-          sharePositionOrigin: origin,
-        ),
+        ShareParams(text: formatted, sharePositionOrigin: origin),
       );
     } catch (e) {
       await Clipboard.setData(ClipboardData(text: formatted));
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Match key copied: $formatted')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Match key copied: $formatted')));
     }
   }
 
@@ -471,9 +468,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Confirm roster?'),
-        content: const Text(
-          "You can't change the placement once you confirm.",
-        ),
+        content: const Text("You can't change the placement once you confirm."),
         actions: [
           PixelTextButton(
             label: 'Cancel',
@@ -561,9 +556,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
                             Text(
                               s.endCause!,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
+                              style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: EngkwentroColors.sand),
                             ),
                           ],
@@ -607,11 +600,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
                   if (_showClocks(s))
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                      child: _clockRow(
-                        context,
-                        s,
-                        mine: false,
-                      ),
+                      child: _clockRow(context, s, mine: false),
                     ),
                   Expanded(
                     child: _NetBoard(
@@ -623,11 +612,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
                   if (_showClocks(s))
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                      child: _clockRow(
-                        context,
-                        s,
-                        mine: true,
-                      ),
+                      child: _clockRow(context, s, mine: true),
                     ),
                   if (s.settingUp)
                     Padding(
@@ -669,9 +654,8 @@ class _NetPlayPageState extends State<NetPlayPage> {
                 Text(
                   'Higher officers beat lower ones. Spy beats every officer; '
                   'only a Private kills a Spy. Anyone captures the Flag.',
-                  style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                    color: EngkwentroColors.sand,
-                  ),
+                  style: Theme.of(ctx).textTheme.bodySmall
+                      ?.copyWith(color: EngkwentroColors.sand),
                 ),
                 const SizedBox(height: 12),
                 for (final entry in _legendOrder)
@@ -679,11 +663,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
                       children: [
-                        PieceArt(
-                          rank: entry.rank,
-                          light: s.iAmLight,
-                          size: 36,
-                        ),
+                        PieceArt(rank: entry.rank, light: s.iAmLight, size: 36),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
@@ -693,9 +673,8 @@ class _NetPlayPageState extends State<NetPlayPage> {
                         ),
                         Text(
                           '×${composition[entry.rank] ?? 0}',
-                          style: Theme.of(ctx).textTheme.labelLarge?.copyWith(
-                            color: EngkwentroColors.gold,
-                          ),
+                          style: Theme.of(ctx).textTheme.labelLarge
+                              ?.copyWith(color: EngkwentroColors.gold),
                         ),
                       ],
                     ),
@@ -783,11 +762,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
   }
 
   /// Opponent above the board (`mine: false`), you beneath (`mine: true`).
-  Widget _clockRow(
-    BuildContext context,
-    NetSession s, {
-    required bool mine,
-  }) {
+  Widget _clockRow(BuildContext context, NetSession s, {required bool mine}) {
     final side = mine ? s.sideLabel : (s.sideA ? 'B' : 'A');
     // A clock is lit while it is running. It stops at the tap.
     final active = s.clockRunning(side);
@@ -798,10 +773,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
     );
     return Row(
       children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const Spacer(),
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
@@ -816,10 +788,7 @@ class _NetPlayPageState extends State<NetPlayPage> {
               width: 2,
             ),
           ),
-          child: Text(
-            s.formatFor(side),
-            style: timeStyle,
-          ),
+          child: Text(s.formatFor(side), style: timeStyle),
         ),
       ],
     );
@@ -853,11 +822,8 @@ class _NetPlayPageState extends State<NetPlayPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: fallen.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 6),
-                  itemBuilder: (_, i) => PieceArt(
-                    rank: fallen[i],
-                    light: s.iAmLight,
-                    size: 40,
-                  ),
+                  itemBuilder: (_, i) =>
+                      PieceArt(rank: fallen[i], light: s.iAmLight, size: 40),
                 ),
         ),
       ],
@@ -953,14 +919,8 @@ class _NetBoard extends StatelessWidget {
               ),
               itemCount: 72,
               itemBuilder: (context, i) {
-                final file = displayBoardFile(
-                  i % 9,
-                  sideA: session.sideA,
-                );
-                final rank = displayBoardRank(
-                  i ~/ 9,
-                  sideA: session.sideA,
-                );
+                final file = displayBoardFile(i % 9, sideA: session.sideA);
+                final rank = displayBoardRank(i ~/ 9, sideA: session.sideA);
                 return _NetSquare(
                   session: session,
                   square: MatchGame.sq(file, rank),

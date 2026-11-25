@@ -18,14 +18,15 @@ That sets `core.hooksPath` to `.githooks`. It does not need Node, Flutter, or Ca
 
 ## What to run
 
-Before a pull request, run the checks that are in the repo.
+Before a pull request, run `scripts/check.sh`. CI runs that script on pull requests and pushes to `main`.
 
-Format and lint by hand. [STYLEGUIDE.md](STYLEGUIDE.md) says no editor setting or workflow runs them.
+Format and lint by hand. [STYLEGUIDE.md](STYLEGUIDE.md) says no editor setting runs them.
 
 ```bash
 # from contracts/
 cargo fmt
-cargo clippy
+cargo clippy --target wasm32-unknown-unknown --workspace
+cargo clippy --all-targets --workspace
 
 # from client/
 dart format .
@@ -36,7 +37,7 @@ Tests from [docs/SETUP.md](docs/SETUP.md):
 
 ```bash
 # from contracts/
-cargo test -p engkwentro
+cargo test --workspace
 
 # from client/
 flutter test
@@ -73,7 +74,7 @@ Pull request titles use the same form. A squash merge writes the title as the co
 
 ## Pull request
 
-- Tests for the change: `cargo test -p engkwentro` from `contracts/`, and `flutter test` from `client/`.
+- Tests for the change: `cargo test --workspace` from `contracts/`, and `flutter test` from `client/`.
 - Docs if behavior changed.
 - [`.github/CODEOWNERS`](.github/CODEOWNERS) requests `@jedau` on every pull request.
 

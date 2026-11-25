@@ -148,6 +148,9 @@ class LocalAccountFactory {
   static String _randToken() {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
     final rng = Random.secure();
-    return List.generate(8, (_) => alphabet[rng.nextInt(alphabet.length)]).join();
+    return List.generate(
+      8,
+      (_) => alphabet[rng.nextInt(alphabet.length)],
+    ).join();
   }
 }

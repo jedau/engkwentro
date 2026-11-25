@@ -18,8 +18,10 @@ List<int> pieceCommitment(Rank rank, List<int> salt) {
 }
 
 /// Hex encoding of [pieceCommitment] for logs and tests.
-String commitmentHex(Rank rank, List<int> salt) =>
-    pieceCommitment(rank, salt).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+String commitmentHex(Rank rank, List<int> salt) => pieceCommitment(
+  rank,
+  salt,
+).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
 /// Home squares for the default army, in the same order as [defaultRoster].
 ///
@@ -28,8 +30,7 @@ String commitmentHex(Rank rank, List<int> salt) =>
 List<(int, int)> homeSquares(bool sideA) {
   final out = <(int, int)>[];
   for (final boardRank in sideA ? [0, 1, 2] : [5, 6, 7]) {
-    final narrow =
-        (sideA && boardRank == 2) || (!sideA && boardRank == 5);
+    final narrow = (sideA && boardRank == 2) || (!sideA && boardRank == 5);
     if (narrow) {
       final files = sideA ? [0, 1, 2] : [6, 7, 8];
       for (final file in files) {

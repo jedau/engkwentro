@@ -57,8 +57,7 @@ class PixelButton extends StatelessWidget {
     final face = primary ? EngkwentroColors.cream : EngkwentroColors.boardLight;
     final rim = primary ? EngkwentroColors.ink : EngkwentroColors.cream;
     final fg = primary ? EngkwentroColors.ink : EngkwentroColors.cream;
-    final extrusion =
-        primary ? EngkwentroColors.gold : EngkwentroColors.ink;
+    final extrusion = primary ? EngkwentroColors.gold : EngkwentroColors.ink;
 
     final step = compact ? 3.0 : 4.0;
     final rimW = compact ? 3.0 : 4.0;
@@ -94,11 +93,7 @@ class PixelButton extends StatelessWidget {
         child: Baseline(
           baseline: iconSize,
           baselineType: TextBaseline.alphabetic,
-          child: SizedBox(
-            width: iconSize,
-            height: iconSize,
-            child: leading,
-          ),
+          child: SizedBox(width: iconSize, height: iconSize, child: leading),
         ),
       ),
     );
@@ -122,10 +117,7 @@ class PixelButton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         mainAxisSize: MainAxisSize.min,
-        children: [
-          mark(padStart: false, padEnd: true),
-          labelText(label),
-        ],
+        children: [mark(padStart: false, padEnd: true), labelText(label)],
       );
     } else {
       child = labelText(label);
@@ -152,10 +144,7 @@ class PixelButton extends StatelessWidget {
                 extrude: extrude,
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: padV,
-                  horizontal: padH,
-                ),
+                padding: EdgeInsets.symmetric(vertical: padV, horizontal: padH),
                 child: child,
               ),
             ),
@@ -183,10 +172,7 @@ class PixelTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      child: Text(label.toUpperCase()),
-    );
+    return TextButton(onPressed: onPressed, child: Text(label.toUpperCase()));
   }
 }
 

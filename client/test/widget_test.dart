@@ -58,8 +58,10 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining('open challenge'), findsOneWidget);
-    expect(find.textContaining('First mover is set when the opponent accepts'),
-        findsOneWidget);
+    expect(
+      find.textContaining('First mover is set when the opponent accepts'),
+      findsOneWidget,
+    );
     expect(find.textContaining('does not wager anything'), findsWidgets);
     expect(find.byType(TextField), findsOneWidget);
     expect(find.text('Commit army'), findsNothing);

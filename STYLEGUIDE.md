@@ -1,6 +1,6 @@
 # Style guide
 
-Run these format and lint commands by hand. No editor setting or workflow runs them yet.
+Run these format and lint commands by hand. CI runs them in `scripts/check.sh`. No editor setting runs them.
 
 ## Rust
 
@@ -8,7 +8,8 @@ Run these from `contracts/`. Edition 2021, rust-version 1.93, as in `contracts/C
 
 ```bash
 cargo fmt
-cargo clippy
+cargo clippy --target wasm32-unknown-unknown --workspace
+cargo clippy --all-targets --workspace
 ```
 
 ## Dart

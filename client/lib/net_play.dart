@@ -497,10 +497,7 @@ class NetSession {
   ///
   /// [stakeYocto] is attached as the deposit and stored on the match. Joiner
   /// must attach the same amount on accept.
-  Future<void> create({
-    int clockMinutes = 15,
-    String stakeYocto = '0',
-  }) async {
+  Future<void> create({int clockMinutes = 15, String stakeYocto = '0'}) async {
     progress = 'Creating match on NEAR…';
     this.stakeYocto = stakeYocto;
     final args = <String, dynamic>{
@@ -511,11 +508,7 @@ class NetSession {
     if (opponent.isNotEmpty && opponent != me) {
       args['opponent'] = opponent;
     }
-    final raw = await near.call(
-      'create_match',
-      args,
-      depositYocto: stakeYocto,
-    );
+    final raw = await near.call('create_match', args, depositYocto: stakeYocto);
     _readCreated(raw);
     accepted = false;
     sideA = true;
@@ -543,11 +536,7 @@ class NetSession {
   Future<void> accept(int id, {String? depositYocto}) async {
     matchId = id;
     if (depositYocto != null) stakeYocto = depositYocto;
-    await near.call(
-      'accept_match',
-      {'match_id': id},
-      depositYocto: stakeYocto,
-    );
+    await near.call('accept_match', {'match_id': id}, depositYocto: stakeYocto);
     joinKey ??= (await near.view('get_join_key', {'match_id': id})) as String?;
     accepted = true;
     sideA = false;
@@ -565,11 +554,9 @@ class NetSession {
       throw FormatException('Enter the 12-character match key.');
     }
     if (depositYocto != null) stakeYocto = depositYocto;
-    final res = await near.call(
-      'accept_match_by_key',
-      {'join_key': key},
-      depositYocto: stakeYocto,
-    );
+    final res = await near.call('accept_match_by_key', {
+      'join_key': key,
+    }, depositYocto: stakeYocto);
     matchId = res['decoded'] as int? ?? matchId;
     joinKey = key;
     accepted = true;
@@ -600,8 +587,7 @@ class NetSession {
       );
     }
     matchId = id;
-    joinKey ??=
-        (await near.view('get_join_key', {'match_id': id})) as String?;
+    joinKey ??= (await near.view('get_join_key', {'match_id': id})) as String?;
 
     final meta = await near.view('get_match', {'match_id': id});
     if (meta is! List || meta.length < 3) {
@@ -622,8 +608,7 @@ class NetSession {
       sideA = true;
       opponent = opp;
       accepted = acceptedFlag;
-    } else if (me == opp ||
-        (!acceptedFlag && opp == openOpponentAccount)) {
+    } else if (me == opp || (!acceptedFlag && opp == openOpponentAccount)) {
       // Bound opponent, or first player claiming an open challenge.
       if (!acceptedFlag) {
         final acceptWith = joinKey ?? key;
@@ -639,15 +624,11 @@ class NetSession {
       opponent = creator;
       accepted = true;
     } else {
-      throw StateError(
-        'Signed in as $me, but this match is $creator vs $opp.',
-      );
+      throw StateError('Signed in as $me, but this match is $creator vs $opp.');
     }
 
     final saved = persist ? await MatchStore.load(me) : null;
-    if (saved != null &&
-        saved.matchId == matchId &&
-        saved.accountId == me) {
+    if (saved != null && saved.matchId == matchId && saved.accountId == me) {
       _applyLocal(saved);
     }
 
@@ -657,8 +638,7 @@ class NetSession {
           'Rejoined, but this device has no sealed army for the match. '
           'Fights need the original salts.';
     } else if (!accepted) {
-      log =
-          'Rejoined as creator. Share ${formatJoinKey(joinKey ?? '')}.';
+      log = 'Rejoined as creator. Share ${formatJoinKey(joinKey ?? '')}.';
     } else if (rosterReady) {
       log = 'Rejoined match. Army restored.';
     } else {
@@ -979,11 +959,7 @@ class NetSession {
   void _announceTurnSeen(PlaySnap snap) {
     unawaited(
       mailbox
-          .put(
-            '$matchId',
-            _seenNoteKey(sideLabel, snap.turnStartedAtNs),
-            '1',
-          )
+          .put('$matchId', _seenNoteKey(sideLabel, snap.turnStartedAtNs), '1')
           .catchError((Object _) {}),
     );
   }
@@ -1024,8 +1000,7 @@ class NetSession {
   Future<void> _pollTurnSeen(PlaySnap before, String them) async {
     if (_theirSeen?.turnStartedAtNs == before.turnStartedAtNs) return;
     // A tap already means they could act.
-    if (_theirTap != null &&
-        _theirTap!.nonce == before.nonceOf(them)) {
+    if (_theirTap != null && _theirTap!.nonce == before.nonceOf(them)) {
       _theirSeen = (
         turnStartedAtNs: before.turnStartedAtNs,
         atMonoNs: monoNs(),
@@ -1199,9 +1174,7 @@ class NetSession {
     if (outcomeReason == 'Resignation' &&
         outcomeWinner != null &&
         outcomeWinner!.isNotEmpty) {
-      return outcomeWinner == sideLabel
-          ? 'Opponent resigned'
-          : 'You resigned';
+      return outcomeWinner == sideLabel ? 'Opponent resigned' : 'You resigned';
     }
     return _reasonPhrase(outcomeReason);
   }
@@ -1702,11 +1675,7 @@ class NetSession {
     late final bool isFlag;
     if (iAmMover) {
       isFlag = rankOfOcc(occupancy[snap.waitTo]) == Rank.flag;
-      await mailbox.put(
-        '$matchId',
-        _arriveNoteKey(slot),
-        isFlag ? '1' : '0',
-      );
+      await mailbox.put('$matchId', _arriveNoteKey(slot), isFlag ? '1' : '0');
       if (isFlag) {
         _flagAt = snap.waitTo;
         _flagOcc = occupancy[snap.waitTo];
@@ -1832,10 +1801,7 @@ class NetSession {
         );
       }
       // Home-row confirm looks like any other quiet move confirm.
-      return (
-        title: 'Moving…',
-        subtitle: busyLine ?? 'Confirming…',
-      );
+      return (title: 'Moving…', subtitle: busyLine ?? 'Confirming…');
     }
     if (busyLine != null) return (title: busyLine, subtitle: null);
     if (snap != null &&

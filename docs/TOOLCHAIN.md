@@ -7,6 +7,8 @@
 | near-sdk | **5.30.0** (do not float `5`) |
 | target | `wasm32-unknown-unknown` |
 | crate version | 0.1.0 |
+| Flutter | 3.47.7 (the version `.github/workflows/check.yml` installs) |
+| Dart | 3.13.5 (the Dart bundled with that Flutter) |
 
 `cargo test` and `cargo build --target wasm32-unknown-unknown` run from
 `contracts/`. Deploy, when asked, is

@@ -101,9 +101,7 @@ ThemeData engkwentroTheme() {
         color: EngkwentroColors.cream,
         height: 1.5,
       ),
-      contentTextStyle: text.bodyMedium?.copyWith(
-        color: EngkwentroColors.sand,
-      ),
+      contentTextStyle: text.bodyMedium?.copyWith(color: EngkwentroColors.sand),
       actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -189,9 +187,7 @@ ThemeData engkwentroTheme() {
       circularTrackColor: EngkwentroColors.boardLight,
     ),
     iconButtonTheme: IconButtonThemeData(
-      style: IconButton.styleFrom(
-        foregroundColor: EngkwentroColors.cream,
-      ),
+      style: IconButton.styleFrom(foregroundColor: EngkwentroColors.cream),
     ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: EngkwentroColors.navy,
