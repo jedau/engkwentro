@@ -37,7 +37,8 @@ reject_secrets() {
   local hits status line tokens token bad
   # Exit 1 means no match. Any other non-zero status is a real git failure.
   set +e
-  hits="$(git -C "$ROOT" grep -I -n -E \
+  # -a: a NUL makes Git call the file binary, and -I would skip the key.
+  hits="$(git -C "$ROOT" grep -a -n -E \
     -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
     -e 'ed25519:[1-9A-HJ-NP-Za-km-z]{32,}' \
     -- .)"
