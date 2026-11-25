@@ -7,8 +7,23 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # The only ed25519 string the repo is allowed to track. Tests use it as a
 # placeholder. Any other ed25519 token of 32 or more base58 characters fails,
-# including one that starts with this placeholder.
+# including one that starts with this placeholder. The same body with no
+# prefix is the same placeholder.
 FIXTURE='ed25519:11111111111111111111111111111111'
+FIXTURE_BARE="${FIXTURE#ed25519:}"
+
+# Decoded length of a base58 string. ready() keeps 32- and 64-byte values.
+b58_bytes() {
+  python3 -c 'import sys
+a="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+s=sys.argv[1]
+n=0
+for c in s:
+    n=n*58+a.index(c)
+pad=len(s)-len(s.lstrip("1"))
+body=(n.bit_length()+7)//8 if n else 0
+print(pad+body)' "$1"
+}
 
 reject_secrets() {
   local path base
@@ -34,13 +49,16 @@ reject_secrets() {
   done < <(git -C "$ROOT" ls-files -z)
   shopt -u nocasematch
 
-  local hits status line tokens token bad
+  local hits status line tokens token bare hit raw bytes bad
   # Exit 1 means no match. Any other non-zero status is a real git failure.
   set +e
   # -a: a NUL makes Git call the file binary, and -I would skip the key.
+  # A bare base58 value counts only on a private-key field. _decodeKey accepts
+  # it, and ready() accepts 32-byte seeds and 64-byte keys.
   hits="$(git -C "$ROOT" grep -a -n -E \
     -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
     -e 'ed25519:[1-9A-HJ-NP-Za-km-z]{32,}' \
+    -e '(privateKey|private_key|secretKey|secret_key)[^A-Za-z0-9]{1,8}[1-9A-HJ-NP-Za-km-z]{32,88}' \
     -- .)"
   status=$?
   set -e
@@ -72,6 +90,18 @@ reject_secrets() {
         break
       fi
     done <<< "$tokens"
+    # The field name keeps this off public keys and tx hashes.
+    bare="$(printf '%s\n' "$line" | grep -oE '(privateKey|private_key|secretKey|secret_key)[^A-Za-z0-9]{1,8}[1-9A-HJ-NP-Za-km-z]{32,88}' || true)"
+    while IFS= read -r hit; do
+      [[ -z "$hit" ]] && continue
+      raw="$(printf '%s\n' "$hit" | grep -oE '[1-9A-HJ-NP-Za-km-z]{32,88}$' || true)"
+      [[ -z "$raw" || "$raw" == "$FIXTURE_BARE" ]] && continue
+      bytes="$(b58_bytes "$raw")"
+      if [[ "$bytes" == 32 || "$bytes" == 64 ]]; then
+        bad="${bad}${line}"$'\n'
+        break
+      fi
+    done <<< "$bare"
   done <<< "$hits"
   if [[ -n "$bad" ]]; then
     echo "Private key material is tracked:" >&2
