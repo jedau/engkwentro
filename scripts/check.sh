@@ -50,16 +50,18 @@ reject_secrets() {
   shopt -u nocasematch
 
   local hits status line tokens token bare hit raw bytes bad nxt pair
+  # PLAYER_KEY is the dart-define _decodeKey accepts. The value may be indented
+  # on the next line; git grep cannot cross that newline, so the hit is the name.
+  local field='privateKey|private_key|secretKey|secret_key|PLAYER_KEY'
   # Exit 1 means no match. Any other non-zero status is a real git failure.
   set +e
   # -a: a NUL makes Git call the file binary, and -I would skip the key.
-  # A bare base58 value counts only on a private-key field. _decodeKey accepts
-  # it, and ready() accepts 32-byte seeds and 64-byte keys. git grep cannot
-  # cross a newline, so the field alone is the hit and the loop joins the next line.
+  # A bare base58 value counts only on one of those fields. ready() keeps
+  # 32-byte seeds and 64-byte keys.
   hits="$(git -C "$ROOT" grep -a -n -E \
     -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
     -e 'ed25519:[1-9A-HJ-NP-Za-km-z]{32,}' \
-    -e '(privateKey|private_key|secretKey|secret_key)' \
+    -e "(${field})" \
     -- .)"
   status=$?
   set -e
@@ -91,14 +93,14 @@ reject_secrets() {
         break
       fi
     done <<< "$tokens"
-    # The field name keeps this off public keys and tx hashes. The seed may be
-    # the next line; the gap allows that newline and the value's indent.
+    # The field name keeps this off public keys and tx hashes. The gap is
+    # whitespace and the punctuation before a value, so indent cannot hide the seed.
     pair="$line"
     if [[ "$line" =~ ^(.*):([0-9]+): ]]; then
       nxt="$(sed -n "$((BASH_REMATCH[2] + 1))p" "$ROOT/${BASH_REMATCH[1]}" || true)"
       pair="${line} ${nxt}"
     fi
-    bare="$(printf '%s\n' "$pair" | grep -oE '(privateKey|private_key|secretKey|secret_key)[^A-Za-z0-9]{1,16}[1-9A-HJ-NP-Za-km-z]{32,88}' || true)"
+    bare="$(printf '%s\n' "$pair" | grep -oE "(${field})[[:space:]\"'=:|>]+[1-9A-HJ-NP-Za-km-z]{32,88}" || true)"
     while IFS= read -r hit; do
       [[ -z "$hit" ]] && continue
       raw="$(printf '%s\n' "$hit" | grep -oE '[1-9A-HJ-NP-Za-km-z]{32,88}$' || true)"
