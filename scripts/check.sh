@@ -93,14 +93,14 @@ reject_secrets() {
         break
       fi
     done <<< "$tokens"
-    # The field name keeps this off public keys and tx hashes. The gap is
-    # whitespace and the punctuation before a value, so indent cannot hide the seed.
+    # The field name keeps this off public keys and tx hashes. The gap includes
+    # YAML chomp - and +, so "private_key: |-" still reaches the seed.
     pair="$line"
     if [[ "$line" =~ ^(.*):([0-9]+): ]]; then
       nxt="$(sed -n "$((BASH_REMATCH[2] + 1))p" "$ROOT/${BASH_REMATCH[1]}" || true)"
       pair="${line} ${nxt}"
     fi
-    bare="$(printf '%s\n' "$pair" | grep -oE "(${field})[[:space:]\"'=:|>]+[1-9A-HJ-NP-Za-km-z]{32,88}" || true)"
+    bare="$(printf '%s\n' "$pair" | grep -oE "(${field})[[:space:]\"'=:|>+-]+[1-9A-HJ-NP-Za-km-z]{32,88}" || true)"
     while IFS= read -r hit; do
       [[ -z "$hit" ]] && continue
       raw="$(printf '%s\n' "$hit" | grep -oE '[1-9A-HJ-NP-Za-km-z]{32,88}$' || true)"
