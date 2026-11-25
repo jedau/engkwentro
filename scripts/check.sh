@@ -14,7 +14,8 @@ reject_secrets() {
   local path base
   # .Env and Credentials.json are the same files on a case-sensitive checkout.
   shopt -s nocasematch
-  while IFS= read -r path; do
+  # -z: quoted ls-files turns café/.env into .env" and the name check misses it.
+  while IFS= read -r -d '' path; do
     [[ -z "$path" ]] && continue
     base="${path##*/}"
     case "$base" in
@@ -30,7 +31,7 @@ reject_secrets() {
         exit 1
         ;;
     esac
-  done < <(git -C "$ROOT" ls-files)
+  done < <(git -C "$ROOT" ls-files -z)
   shopt -u nocasematch
 
   local hits status line tokens token bad
