@@ -49,38 +49,41 @@ reject_secrets() {
   done < <(git -C "$ROOT" ls-files -z)
   shopt -u nocasematch
 
-  local hits status line tokens token bare hit raw bytes bad nxt pair
+  local hits_file status path lineno line tokens token bare hit raw bytes bad nxt pair
   # PLAYER_KEY is the dart-define _decodeKey accepts. The value may be indented
   # on the next line; git grep cannot cross that newline, so the hit is the name.
   local field='privateKey|private_key|secretKey|secret_key|PLAYER_KEY'
+  # -z records keep a newline in the path. A quoted name is not a file sed can open.
+  hits_file="$(mktemp)"
+  trap "rm -f $(printf '%q' "$hits_file")" EXIT
   # Exit 1 means no match. Any other non-zero status is a real git failure.
   set +e
   # -a: a NUL makes Git call the file binary, and -I would skip the key.
   # A bare base58 value counts only on one of those fields. ready() keeps
   # 32-byte seeds and 64-byte keys.
-  hits="$(git -C "$ROOT" grep -a -n -E \
+  git -C "$ROOT" grep -a -n -z -E \
     -e '-----BEGIN [A-Z ]*PRIVATE KEY-----' \
     -e 'ed25519:[1-9A-HJ-NP-Za-km-z]{32,}' \
     -e "(${field})" \
-    -- .)"
+    -- . >"$hits_file"
   status=$?
   set -e
   if [[ "$status" -eq 1 ]]; then
+    rm -f "$hits_file"
+    trap - EXIT
     return 0
   fi
   if [[ "$status" -ne 0 ]]; then
     echo "git grep failed while scanning for private keys" >&2
     exit 1
   fi
-  if [[ -z "$hits" ]]; then
-    return 0
-  fi
 
   bad=""
-  while IFS= read -r line; do
-    [[ -z "$line" ]] && continue
+  while IFS= read -r -d '' path && IFS= read -r -d '' lineno; do
+    IFS= read -r line || true
+    [[ -z "$path" ]] && continue
     if [[ "$line" == *'-----BEGIN '*'PRIVATE KEY-----'* ]]; then
-      bad="${bad}${line}"$'\n'
+      bad="${bad}${path}:${lineno}"$'\n'
       continue
     fi
     # Match the whole token. Stripping the fixture as a prefix would hide a
@@ -89,17 +92,15 @@ reject_secrets() {
     while IFS= read -r token; do
       [[ -z "$token" ]] && continue
       if [[ "$token" != "$FIXTURE" ]]; then
-        bad="${bad}${line}"$'\n'
+        bad="${bad}${path}:${lineno}"$'\n'
         break
       fi
     done <<< "$tokens"
     # The field name keeps this off public keys and tx hashes. The gap includes
     # YAML chomp - and +, so "private_key: |-" still reaches the seed.
     pair="$line"
-    if [[ "$line" =~ ^(.*):([0-9]+): ]]; then
-      nxt="$(sed -n "$((BASH_REMATCH[2] + 1))p" "$ROOT/${BASH_REMATCH[1]}" || true)"
-      pair="${line} ${nxt}"
-    fi
+    nxt="$(sed -n "$((lineno + 1))p" < "$ROOT/$path" || true)"
+    pair="${line} ${nxt}"
     bare="$(printf '%s\n' "$pair" | grep -oE "(${field})[[:space:]\"'=:|>+-]+[1-9A-HJ-NP-Za-km-z]{32,88}" || true)"
     while IFS= read -r hit; do
       [[ -z "$hit" ]] && continue
@@ -107,15 +108,16 @@ reject_secrets() {
       [[ -z "$raw" || "$raw" == "$FIXTURE_BARE" ]] && continue
       bytes="$(b58_bytes "$raw")"
       if [[ "$bytes" == 32 || "$bytes" == 64 ]]; then
-        bad="${bad}${line}"$'\n'
+        bad="${bad}${path}:${lineno}"$'\n'
         break
       fi
     done <<< "$bare"
-  done <<< "$hits"
+  done < "$hits_file"
+  rm -f "$hits_file"
+  trap - EXIT
   if [[ -n "$bad" ]]; then
     echo "Private key material is tracked:" >&2
-    # git grep -n is path:line:text. The text is the key, so keep path and line.
-    printf '%s' "$bad" | cut -d: -f1-2 >&2
+    printf '%s' "$bad" >&2
     exit 1
   fi
 }
@@ -164,8 +166,9 @@ cargo --locked fmt --check
 # nightly feature and the build fails on stable.
 # The wasm target is a separate build. It is the one that deploys, and it
 # does not use the unit-testing dev-dependency.
-cargo --locked clippy --target wasm32-unknown-unknown --workspace
-cargo --locked clippy --all-targets --workspace
+# --locked must follow clippy. A leading one is ignored, and clippy rewrites the lock.
+cargo clippy --locked --target wasm32-unknown-unknown --workspace
+cargo clippy --locked --all-targets --workspace
 cargo --locked test --workspace
 
 cd "$ROOT/client"
